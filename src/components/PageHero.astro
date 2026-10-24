@@ -1,0 +1,15 @@
+---
+interface Props {
+  title: string;
+  lead?: string;
+  id?: string;
+}
+
+const { title, lead, id = 'page-title' } = Astro.props;
+---
+<section class="page-hero on-dark" aria-labelledby={id}>
+  <div class="container">
+    <h1 id={id}>{title}</h1>
+    {lead && <p>{lead}</p>}
+  </div>
+</section>

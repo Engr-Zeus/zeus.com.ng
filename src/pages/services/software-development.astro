@@ -1,0 +1,152 @@
+---
+import '../../styles/service-page.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceHero from '../../components/service/ServiceHero.astro';
+import OfferingGrid from '../../components/service/OfferingGrid.astro';
+import ProcessSteps from '../../components/service/ProcessSteps.astro';
+import Faq from '../../components/service/Faq.astro';
+import EnquirySection from '../../components/service/EnquirySection.astro';
+import AppMock from '../../components/service/visuals/AppMock.astro';
+import Diagram from '../../components/service/visuals/Diagram.astro';
+import type { Field } from '../../components/service/types';
+
+// Interfaces and diagrams are illustrative concepts, not working systems or client implementations.
+// No frameworks, languages, or proprietary products are claimed.
+const features = [
+  { title: 'Business applications and internal management systems', text: 'Software that helps your team manage records, requests, stock, customers, or day-to-day tasks in one place, shaped around how you actually work.', visual: 'records', kind: 'app' },
+  { title: 'Workflow and process automation', text: 'Turn manual, repetitive steps such as approvals, hand-offs, and record keeping into a defined digital process that is easier to follow and track.', visual: 'workflow', kind: 'diagram' },
+  { title: 'Database-driven applications', text: 'Applications built around structured data, so information is stored once, kept consistent, and available where people need it.', visual: 'data', kind: 'diagram' },
+  { title: 'Web portals and business dashboards', text: 'Browser-based portals and dashboards that give staff, partners, or customers access to the information and tools relevant to them.', visual: 'dashboard', kind: 'app' },
+  { title: 'API development and system integration', text: 'Connecting the systems you already use so they can share information, reducing the need to re-enter the same data in several places.', visual: 'integration', kind: 'diagram' },
+];
+const care = [
+  { icon: 'refresh', title: 'Application modernization and maintenance', text: 'Updating older applications, fixing issues, and making improvements so software keeps pace with how your organization works.' },
+  { icon: 'bug', title: 'Software testing and quality assurance', text: 'Checking that software behaves as specified before it goes live, and re-checking when it changes.' },
+];
+const steps = [
+  { title: 'Requirements', text: 'We work with you to understand the problem, users, and what the software must do.' },
+  { title: 'Solution design', text: 'We outline how the solution will work, how it will look, and how it fits your systems.' },
+  { title: 'Development', text: 'We build the solution in stages that you can review.' },
+  { title: 'Testing', text: 'We test the software against the agreed requirements.' },
+  { title: 'Deployment', text: 'We put the software into use and help your team get started.' },
+  { title: 'Ongoing improvement', text: 'We maintain and refine the software as your needs change.' },
+];
+const uses = [
+  { icon: 'bag', title: 'Retail and distribution', text: 'Stock records, order tracking, and supplier information in one system.' },
+  { icon: 'book', title: 'Education and training', text: 'Student records, enrolment steps, and learner progress tracking.' },
+  { icon: 'landmark', title: 'Public sector', text: 'Request handling, case tracking, and document workflows.' },
+  { icon: 'briefcase', title: 'Professional services', text: 'Client records, project tracking, and internal approvals.' },
+  { icon: 'building', title: 'Property and facilities', text: 'Maintenance requests, asset registers, and tenant or occupant records.' },
+  { icon: 'chart', title: 'Operations and administration', text: 'Reporting, scheduling, and recurring internal processes.' },
+];
+const faqs = [
+  { q: 'How are software projects scoped?', a: 'Projects are scoped according to requirements, complexity, integrations, and delivery needs. We start by understanding what you need, then outline what building it involves.' },
+  { q: 'How much does custom software cost?', a: 'It depends on the scope. We do not publish prices; after discussing your requirements we prepare a proposal for you to consider.' },
+  { q: 'How long will it take?', a: 'Timelines depend on the size of the project, the number of integrations, and how quickly decisions and feedback are available. We agree a schedule with you once the scope is clear.' },
+  { q: 'Can new software work with the systems we already use?', a: 'Integration is part of our service. Whether a particular system can be connected depends on what it offers, so tell us which systems you use and we will assess it.' },
+  { q: 'Do you maintain software after it is delivered?', a: 'Yes. Maintenance and ongoing improvement are part of our service, and we can discuss what support you need as we scope the project.' },
+  { q: 'What if I am not sure what I need?', a: 'That is a good place to start. Describe the problem you are trying to solve, and we will help you work out whether software is the right answer and what it might involve.' },
+];
+const fields: Field[] = [
+  { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+  { name: 'email', label: 'Email address', type: 'email', required: true, autocomplete: 'email' },
+  { name: 'phone', label: 'Phone number', type: 'tel', autocomplete: 'tel' },
+  { name: 'organization', label: 'Organization', autocomplete: 'organization' },
+  { name: 'interest', label: 'What would you like to build?', type: 'select', wide: true, options: ['Business application or management system', 'Workflow or process automation', 'Database-driven application', 'Web portal or dashboard', 'API or system integration', 'Modernization or maintenance of existing software', 'Testing and quality assurance', 'Not sure yet'] },
+  { name: 'message', label: 'Describe the challenge you want to solve', type: 'textarea', required: true, hint: 'What happens today, who would use the software, and which systems it would need to work with.' },
+];
+---
+<BaseLayout
+  title="Software Development | Zeus System Technologies"
+  description="Custom software, workflow automation, integrations, and web portals built around your requirements by Zeus System Technologies. Request a consultation."
+>
+  <ServiceHero
+    title="Custom Software. Built Around Your Business."
+    lead="We help organizations turn operational challenges into practical digital solutions through custom applications, workflow automation, and connected systems."
+    primary={{ label: 'Request a Consultation', href: '#enquire' }}
+    secondary={{ label: 'View Our Services', href: '/services/' }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: 'Software Development' }]}
+    schemaName="Software Development"
+    schemaDescription="Custom applications, workflow automation, database-driven software, integrations, and maintenance."
+  >
+    <figure class="sp-figure">
+      <AppMock variant="dashboard" />
+      <figcaption>Illustrative interface concept. Not a working system or client project.</figcaption>
+    </figure>
+  </ServiceHero>
+
+  <section class="section" aria-labelledby="overview-title">
+    <div class="container sp-split">
+      <div class="sp-prose">
+        <h2 id="overview-title">Custom software, shaped by your requirements</h2>
+        <p>Off-the-shelf software does not always fit the way an organization works. Custom software is designed around your processes, your data, and your people, so it supports the work you actually do.</p>
+        <p>We build applications, automate repetitive workflows, and connect the systems you already rely on.</p>
+      </div>
+      <div class="sp-callout">
+        <p><strong>How projects are scoped.</strong> Every project is scoped according to your requirements, complexity, integrations, and delivery needs. We start with a conversation, not a fixed package.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="build-title">
+    <div class="container">
+      <SectionHeading id="build-title" title="What we build" intro="Examples of the kinds of solution we can design and deliver. The visuals are illustrative concepts." />
+      <div class="sp-mocks">
+        {features.map((f) => (
+          <div class="sp-mock-row">
+            <div>
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+              <span class="sp-tag">Illustrative concept</span>
+            </div>
+            {f.kind === 'app' ? (
+              <AppMock variant={f.visual as 'dashboard' | 'records'} />
+            ) : (
+              <div class="sp-frame"><Diagram name={f.visual} /></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="care-title">
+    <div class="container">
+      <SectionHeading id="care-title" title="Keeping software dependable" intro="Good software needs checking before launch and care afterwards." />
+      <OfferingGrid items={care} cols={2} variant="cards" />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeading id="process-title" title="Our delivery process" intro="Six stages that keep requirements, design, and delivery connected." />
+      <ProcessSteps steps={steps} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="use-title">
+    <div class="container">
+      <SectionHeading id="use-title" title="Industries and use cases" intro="Examples of where custom software could help. These are potential applications, not a list of clients or completed projects." />
+      <OfferingGrid items={uses} cols={3} variant="rows" />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="faq-title">
+    <div class="container">
+      <SectionHeading id="faq-title" title="Frequently asked questions" />
+      <Faq items={faqs} />
+    </div>
+  </section>
+
+  <EnquirySection
+    title="Book a Project Consultation"
+    text="Tell us about the challenge you want to solve. We will respond to discuss your requirements and how a solution might work."
+    formId="software-enquiry"
+    subject="Software Development consultation enquiry"
+    submitLabel="Send consultation request"
+    fields={fields}
+    useServiceWeb3Forms
+    tips={['What happens today and what you want to change', 'Who would use the software', 'Systems it would need to connect with']}
+  />
+</BaseLayout>

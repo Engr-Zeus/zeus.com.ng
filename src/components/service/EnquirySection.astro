@@ -1,0 +1,45 @@
+---
+// Final call-to-action + enquiry form. The page's primary CTA links to #enquire.
+import EnquiryForm from './EnquiryForm.astro';
+import type { Field } from './types';
+import SvcIcon from './SvcIcon.astro';
+import { company } from '../../data/site';
+
+interface Props {
+  title: string;
+  text: string;
+  formId: string;
+  subject: string;
+  submitLabel: string;
+  fields: Field[];
+  tips?: string[]; // "what to include" list
+  useServiceWeb3Forms?: boolean;
+}
+const { title, text, formId, subject, submitLabel, fields, tips = [], useServiceWeb3Forms = false } = Astro.props;
+---
+<section class="sp-enquire on-dark" id="enquire" aria-labelledby="enquire-title">
+  <div class="container sp-enquire-grid">
+    <div class="sp-enquire-copy">
+      <h2 id="enquire-title">{title}</h2>
+      <p>{text}</p>
+      {tips.length > 0 && (
+        <ul class="sp-tips">
+          {tips.map((t) => <li><SvcIcon name="check" size={18} />{t}</li>)}
+        </ul>
+      )}
+      <ul class="sp-direct">
+        <li><SvcIcon name="phone" size={20} /><a href={company.phoneHref}>{company.phone}</a></li>
+        <li><SvcIcon name="mail" size={20} /><a href={`mailto:${company.email}`}>{company.email}</a></li>
+      </ul>
+    </div>
+    <div class="sp-form-wrap">
+      <EnquiryForm
+        id={formId}
+        fields={fields}
+        subject={subject}
+        submitLabel={submitLabel}
+        web3FormsKey={useServiceWeb3Forms ? import.meta.env.PUBLIC_SERVICE_FORM_ACCESS_KEY ?? '' : undefined}
+      />
+    </div>
+  </div>
+</section>

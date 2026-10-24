@@ -1,0 +1,49 @@
+---
+// Illustrative website wireframes. Always shown with an "illustrative" caption by the page; never presented as client work.
+interface Props { device?: 'browser' | 'tablet' | 'phone'; variant?: 'corporate' | 'shop' | 'portal' | 'business'; class?: string }
+const { device = 'browser', variant = 'corporate', class: className } = Astro.props;
+---
+<div class:list={['sp-device', `sp-device--${device}`, className]} aria-hidden="true">
+  {device === 'browser' && <div class="sp-device-bar"><i></i><i></i><i></i><span class="sp-url"></span></div>}
+  {device === 'phone' && <div class="sp-device-bar" style="justify-content:center"><span class="sp-url" style="margin:0;max-width:40%"></span></div>}
+  <div class="wf">
+    {variant === 'corporate' && (
+      <>
+        <div class="nav"><b class="l"></b><b></b><b></b><b></b><b class="c"></b></div>
+        <div class="row2">
+          <div style="display:grid;gap:.5rem;align-content:center"><b class="l" style="width:90%"></b><b class="l" style="width:62%"></b><b class="s" style="width:80%"></b><b class="s" style="width:70%"></b><b class="btn-b"></b></div>
+          <div class="blk dk" style="min-height:5rem"></div>
+        </div>
+        <div class="row3"><div class="blk"></div><div class="blk"></div><div class="blk"></div></div>
+        <b class="s" style="width:60%"></b>
+      </>
+    )}
+    {variant === 'business' && (
+      <>
+        <div class="nav"><b class="l"></b><b></b><b></b><b class="c"></b></div>
+        <div class="blk cy" style="min-height:4.2rem;display:grid;place-content:center;gap:.4rem;padding:.6rem"><b class="l" style="width:7rem;margin:auto"></b><b class="s" style="width:5rem;margin:auto"></b><b class="btn-b" style="margin:auto;width:3.5rem"></b></div>
+        <div class="row2"><div class="blk" style="min-height:3rem"></div><div style="display:grid;gap:.4rem;align-content:center"><b></b><b class="s"></b><b class="s" style="width:70%"></b></div></div>
+      </>
+    )}
+    {variant === 'shop' && (
+      <>
+        <div class="nav"><b class="l"></b><b style="width:30%;margin-right:auto;height:.8rem;border-radius:99px"></b><b class="c" style="width:1.4rem"></b></div>
+        <div class="grid6">
+          {[0, 1, 2, 3, 4, 5].map((n) => (
+            <div class="prod"><div class:list={['blk', n % 3 === 0 && 'cy']}></div><b class="s"></b><b class="s c" style="width:40%"></b></div>
+          ))}
+        </div>
+      </>
+    )}
+    {variant === 'portal' && (
+      <div class="side">
+        <div class="rail"><b class="c"></b><b></b><b></b><b></b></div>
+        <div style="display:grid;gap:.5rem">
+          <div class="row3"><div class="blk cy" style="min-height:1.8rem"></div><div class="blk" style="min-height:1.8rem"></div><div class="blk" style="min-height:1.8rem"></div></div>
+          <div class="bars"><i style="height:40%"></i><i style="height:65%" class="c"></i><i style="height:50%"></i><i style="height:80%" class="c"></i><i style="height:60%"></i><i style="height:90%" class="c"></i></div>
+          <div class="tbl"><div class="r"><b></b><b></b><b class="pill"></b></div><div class="r"><b></b><b></b><b class="pill"></b></div><div class="r"><b></b><b></b><b class="pill"></b></div></div>
+        </div>
+      </div>
+    )}
+  </div>
+</div>

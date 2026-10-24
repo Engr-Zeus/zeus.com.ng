@@ -1,0 +1,92 @@
+---
+// Decorative line illustrations, one per service category. Styled by src/styles/services.css (.sv-art).
+interface Props {
+  name: 'managed' | 'web' | 'software' | 'infra' | 'hardware' | 'cctv' | 'training';
+}
+const { name } = Astro.props;
+---
+<svg class="sv-art" viewBox="0 0 320 200" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  {name === 'managed' && (
+    <>
+      <rect x="28" y="26" width="264" height="148" rx="8" />
+      <path class="dim" d="M28 52H292" />
+      <circle class="fill" cx="44" cy="39" r="3" /><circle class="fill dimfill" cx="56" cy="39" r="3" /><circle class="fill dimfill" cx="68" cy="39" r="3" />
+      <path class="dim" d="M44 68H116M44 82H92M206 68H276M226 82H276" />
+      <path class="dim" d="M44 118H104L118 88L138 150L154 102L166 118H276" />
+      <path class="pulse" pathLength="1" d="M44 118H104L118 88L138 150L154 102L166 118H276" />
+      <circle class="fill blink" cx="266" cy="39" r="4" />
+    </>
+  )}
+  {name === 'web' && (
+    <>
+      <rect x="28" y="22" width="264" height="156" rx="8" />
+      <path class="dim" d="M28 48H292" />
+      <circle class="fill" cx="44" cy="35" r="3" /><circle class="fill dimfill" cx="56" cy="35" r="3" /><circle class="fill dimfill" cx="68" cy="35" r="3" />
+      <rect class="fill dimfill" x="44" y="62" width="112" height="14" rx="3" />
+      <path class="dim" d="M44 92H150M44 104H138M44 116H146" />
+      <rect x="44" y="130" width="52" height="20" rx="4" />
+      <rect x="176" y="62" width="100" height="86" rx="4" />
+      <path d="M176 134L206 102L226 122L246 106L276 136" />
+      <circle cx="256" cy="82" r="6" />
+      <path class="fill cursor" d="M236 146l0 24l7-7l5 12l5-2l-5-12l9 0z" />
+    </>
+  )}
+  {name === 'software' && (
+    <>
+      <rect x="28" y="22" width="264" height="156" rx="8" />
+      <path class="dim" d="M28 48H292M62 48V178" />
+      <circle class="fill" cx="44" cy="35" r="3" /><circle class="fill dimfill" cx="56" cy="35" r="3" /><circle class="fill dimfill" cx="68" cy="35" r="3" />
+      <path class="dim" d="M40 66h10M40 82h10M40 98h10M40 114h10M40 130h10M40 146h10" />
+      <path d="M74 66h60M74 82h30M118 82h50M86 98h70" />
+      <path class="dim" d="M86 114h40M130 114h30M74 130h24M74 146h80" />
+      <text class="mono" x="204" y="134" font-size="48" stroke="none" fill="currentColor">{'{ }'}</text>
+    </>
+  )}
+  {name === 'infra' && (
+    <>
+      <circle cx="160" cy="44" r="24" />
+      <ellipse cx="160" cy="44" rx="10" ry="24" />
+      <path class="dim" d="M136 44H184" />
+      <path d="M160 68V92" />
+      <rect x="136" y="92" width="48" height="22" rx="4" />
+      <path d="M146 103h.01M160 103h.01M174 103h.01" stroke-width="4" />
+      <path d="M136 103H72V134M184 103H248V134M160 114V134" />
+      <rect x="48" y="134" width="48" height="36" rx="4" /><rect x="136" y="134" width="48" height="36" rx="4" /><rect x="224" y="134" width="48" height="36" rx="4" />
+      <path class="dim" d="M56 146h32M56 158h32M144 146h32M144 158h32M232 146h32M232 158h32" />
+    </>
+  )}
+  {name === 'hardware' && (
+    <>
+      <rect x="36" y="52" width="120" height="78" rx="6" />
+      <rect class="dim" x="46" y="62" width="100" height="58" rx="2" />
+      <path d="M24 142H168L156 130H36z" />
+      <path class="dim" d="M56 80h40M56 94h60M56 108h30" />
+      <rect x="196" y="40" width="96" height="32" rx="4" /><rect x="196" y="78" width="96" height="32" rx="4" /><rect x="196" y="116" width="96" height="32" rx="4" />
+      <circle class="fill blink" cx="210" cy="56" r="3" /><circle class="fill" cx="210" cy="94" r="3" /><circle class="fill blink" cx="210" cy="132" r="3" />
+      <path class="dim" d="M226 56h54M226 94h54M226 132h54" />
+    </>
+  )}
+  {name === 'cctv' && (
+    <>
+      <path class="cone" d="M134 98L292 28V168z" />
+      <path class="dim" d="M150 98H292" stroke-dasharray="2 6" />
+      <rect x="40" y="76" width="78" height="34" rx="6" />
+      <path d="M118 84L134 76V110L118 102z" />
+      <circle cx="78" cy="93" r="8" />
+      <path d="M80 76V66H104V76M60 110V132M40 132H80" />
+      <path d="M236 142V116L256 100L276 116V142z" />
+      <path class="dim" d="M250 142V128h12v14" />
+      <circle class="fill rec" cx="252" cy="46" r="4" />
+      <text class="mono" x="262" y="50" font-size="12" stroke="none" fill="currentColor">REC</text>
+    </>
+  )}
+  {name === 'training' && (
+    <>
+      <path class="dim" d="M32 166H288" />
+      <rect x="48" y="138" width="40" height="28" rx="3" /><rect x="100" y="114" width="40" height="52" rx="3" /><rect x="152" y="90" width="40" height="76" rx="3" /><rect x="204" y="66" width="40" height="100" rx="3" />
+      <path d="M58 152l6 6 12-12M110 130l6 6 12-12M162 106l6 6 12-12" />
+      <path class="dim" d="M214 84h20" stroke-dasharray="2 5" />
+      <path d="M188 36L224 22L260 36L224 50zM202 43V54c0 4 10 7 22 7s22-3 22-7V43" />
+    </>
+  )}
+</svg>

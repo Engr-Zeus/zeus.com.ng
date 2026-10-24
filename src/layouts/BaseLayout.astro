@@ -1,0 +1,84 @@
+---
+import '@fontsource-variable/archivo';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { company } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  image = '/og-default.png',
+  imageAlt = 'Zeus System Technologies logo',
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+
+// Only verified company facts (see src/data/site.ts).
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: company.brandName,
+  legalName: company.legalName,
+  url: company.url,
+  logo: new URL('/apple-touch-icon.png', Astro.site).href,
+  email: company.email,
+  telephone: company.phone,
+  foundingDate: String(company.founded),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${company.address.street}, ${company.address.area}`,
+    addressLocality: company.address.city,
+    addressCountry: 'NG',
+  },
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content="#060f20" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={company.brandName} />
+    <meta property="og:locale" content="en_NG" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organization)} />
+  </head>
+  <body>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

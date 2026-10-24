@@ -1,0 +1,158 @@
+---
+import '../../styles/service-page.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceHero from '../../components/service/ServiceHero.astro';
+import OfferingGrid from '../../components/service/OfferingGrid.astro';
+import ProcessSteps from '../../components/service/ProcessSteps.astro';
+import Faq from '../../components/service/Faq.astro';
+import EnquirySection from '../../components/service/EnquirySection.astro';
+import Diagram from '../../components/service/visuals/Diagram.astro';
+import SvcIcon from '../../components/service/SvcIcon.astro';
+import type { Field } from '../../components/service/types';
+
+// Calm, practical tone. No claim that any system prevents incidents, works with every device, or guarantees remote access.
+const cctv = [
+  { icon: 'camera', title: 'CCTV installation and configuration', text: 'Cameras and recording equipment installed and set up for your premises.' },
+  { icon: 'phoneui', title: 'Remote viewing setup on supported devices', text: 'Viewing your cameras from a phone or computer, where your equipment and internet connection support it.' },
+  { icon: 'search', title: 'Camera positioning and coverage planning', text: 'Deciding where cameras should go so the areas that matter are in view.' },
+];
+const automation = [
+  { icon: 'bulb', title: 'Smart lighting and connected-device configuration', text: 'Setting up smart lighting and compatible connected devices so they work together.' },
+  { icon: 'home', title: 'Home and small-office automation', text: 'Bringing lighting, devices, and routines together for easier day-to-day control.' },
+];
+const care = [
+  { icon: 'wifi', title: 'Network connectivity for security devices', text: 'Making sure cameras and connected devices have the network connection they need.' },
+  { icon: 'wrench', title: 'Maintenance, troubleshooting, and upgrades', text: 'Checking, fixing, and expanding existing systems as your needs change.' },
+];
+const steps = [
+  { title: 'Site assessment', text: 'We look at your premises and what you want to see or control.' },
+  { title: 'Recommendation', text: 'We suggest equipment and placement that fit your needs.' },
+  { title: 'Quotation', text: 'You receive a quotation to review and approve.' },
+  { title: 'Installation', text: 'We install the agreed equipment and cabling.' },
+  { title: 'Configuration', text: 'We set up recording, viewing, and connected devices.' },
+  { title: 'Handover', text: 'We show you how to use the system and answer your questions.' },
+];
+const faqs = [
+  { q: 'What does installation require?', a: 'Requirements depend on the premises and the equipment chosen, including cabling routes, power, and mounting locations. We assess your site first and explain what is needed in the quotation.' },
+  { q: 'Do I need internet to use CCTV?', a: 'A CCTV system can record without internet. Internet connectivity is needed for remote viewing, and the quality of that connection affects how well remote viewing works.' },
+  { q: 'Can I view my cameras from my phone?', a: 'Remote viewing can be set up on supported devices. It depends on your equipment, your internet connection, and a suitable configuration, so we confirm what is possible for your system.' },
+  { q: 'Will it work with the devices I already have?', a: 'Compatibility varies between products. Tell us what you already own and we will assess whether it can be included.' },
+  { q: 'Can you maintain or upgrade an existing system?', a: 'Yes. Maintenance, troubleshooting, and upgrades are part of our service, including for systems we did not install, subject to assessment.' },
+  { q: 'Does CCTV prevent incidents?', a: 'No system can promise that. CCTV gives you visibility and a record of what happens in the areas covered, which can support decisions and follow-up.' },
+];
+const fields: Field[] = [
+  { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+  { name: 'email', label: 'Email address', type: 'email', required: true, autocomplete: 'email' },
+  { name: 'phone', label: 'Phone number', type: 'tel', autocomplete: 'tel' },
+  { name: 'premises', label: 'Type of premises', type: 'select', options: ['Home', 'Office', 'Small business premises', 'Other'] },
+  { name: 'interest', label: 'What are you interested in?', type: 'select', wide: true, options: ['CCTV installation', 'Home or small-office automation', 'Both CCTV and automation', 'Maintenance or upgrade of an existing system', 'Not sure yet'] },
+  { name: 'location', label: 'Location of the premises', placeholder: 'Area or city', wide: true },
+  { name: 'message', label: 'Describe what you would like to achieve', type: 'textarea', required: true, hint: 'Size of the premises, areas of interest, and any equipment you already have.' },
+];
+---
+<BaseLayout
+  title="Home Automation and CCTV | Zeus System Technologies"
+  description="CCTV installation, remote viewing setup, smart lighting, and home and small-office automation from Zeus System Technologies. Request an installation quote."
+>
+  <ServiceHero
+    title="Smarter Spaces. Greater Visibility."
+    lead="CCTV and connected-device solutions for homeowners, offices, small businesses, and other premises. Plan, install, and look after the systems that help you see and manage your space."
+    primary={{ label: 'Request an Installation Quote', href: '#enquire' }}
+    secondary={{ label: 'View Our Services', href: '/services/' }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: 'Home Automation and CCTV' }]}
+    schemaName="Home Automation and CCTV"
+    schemaDescription="CCTV installation and configuration, remote viewing setup, smart lighting, and home and small-office automation."
+  >
+    <figure class="sp-figure">
+      <div class="sp-frame"><Diagram name="plan" /></div>
+      <figcaption>Illustrative floor plan showing how camera coverage can be planned. Not a real installation.</figcaption>
+    </figure>
+  </ServiceHero>
+
+  <section class="section" aria-labelledby="two-title">
+    <div class="container">
+      <SectionHeading id="two-title" title="Two services, one connected space" intro="CCTV and home automation do different jobs. They can also work well side by side." />
+      <div class="sp-compare">
+        <div class="sp-panel">
+          <h3>CCTV surveillance</h3>
+          <p>Helps you see and record what happens in the areas you choose.</p>
+          <ul>
+            <li><SvcIcon name="check" size={18} />Cameras and recording equipment</li>
+            <li><SvcIcon name="check" size={18} />Viewing live and recorded footage</li>
+            <li><SvcIcon name="check" size={18} />Coverage planned around your premises</li>
+          </ul>
+        </div>
+        <div class="sp-panel">
+          <h3>Home and small-office automation</h3>
+          <p>Helps you control lighting and connected devices more conveniently.</p>
+          <ul>
+            <li><SvcIcon name="check" size={18} />Smart lighting and connected devices</li>
+            <li><SvcIcon name="check" size={18} />Routines and everyday control</li>
+            <li><SvcIcon name="check" size={18} />Set up around how you use the space</li>
+          </ul>
+        </div>
+        <div class="sp-compare-join">
+          <h3>How they may complement each other</h3>
+          <p>Both rely on a dependable network connection, and they can be planned together so that equipment, cabling, and connectivity are considered once. Whether to combine them is your choice.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="cctv-title">
+    <div class="container sp-split sp-split--even">
+      <div>
+        <SectionHeading id="cctv-title" title="CCTV surveillance" intro="Visibility over the areas that matter to you." />
+        <OfferingGrid items={cctv} cols={1} variant="rows" />
+      </div>
+      <div style="display:grid;gap:1rem">
+        <div class="sp-frame"><Diagram name="camera" /></div>
+        <p class="sp-note" style="color:var(--color-muted)">Illustration of common camera styles. The right type depends on the location.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="auto-title">
+    <div class="container sp-split sp-split--even sp-split--flip">
+      <div>
+        <SectionHeading id="auto-title" title="Home and small-office automation" intro="Everyday control of lighting and connected devices." />
+        <OfferingGrid items={automation} cols={1} variant="rows" />
+        <p class="sp-note" style="color:var(--color-muted)">Compatibility depends on the devices involved. We confirm what can work together before you commit.</p>
+      </div>
+      <div class="sp-frame"><Diagram name="smarthome" /></div>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="care-title">
+    <div class="container">
+      <SectionHeading id="care-title" title="Connectivity and care" intro="The network behind your devices, and the upkeep that keeps them working." />
+      <OfferingGrid items={care} cols={2} variant="cards" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeading id="process-title" title="Installation process" intro="Six steps from first visit to handover." />
+      <ProcessSteps steps={steps} />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="faq-title">
+    <div class="container">
+      <SectionHeading id="faq-title" title="Frequently asked questions" />
+      <Faq items={faqs} />
+    </div>
+  </section>
+
+  <EnquirySection
+    title="Request an Installation Quote"
+    text="Tell us about your premises and what you would like to achieve. We will respond to arrange a site assessment and quotation."
+    formId="cctv-enquiry"
+    subject="Home Automation and CCTV installation enquiry"
+    submitLabel="Request installation quote"
+    fields={fields}
+    useServiceWeb3Forms
+    tips={['Type and size of the premises', 'Areas you want to cover or control', 'Equipment you already have']}
+  />
+</BaseLayout>

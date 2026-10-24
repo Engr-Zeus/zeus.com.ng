@@ -1,0 +1,168 @@
+---
+import '../../styles/service-page.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceHero from '../../components/service/ServiceHero.astro';
+import OfferingGrid from '../../components/service/OfferingGrid.astro';
+import ProcessSteps from '../../components/service/ProcessSteps.astro';
+import Faq from '../../components/service/Faq.astro';
+import EnquirySection from '../../components/service/EnquirySection.astro';
+import Diagram from '../../components/service/visuals/Diagram.astro';
+import SvcIcon from '../../components/service/SvcIcon.astro';
+import type { Field } from '../../components/service/types';
+
+// Diagrams are illustrations, not photographs of installations. No vendor authorization, compliance certification,
+// security guarantee, or performance figure is claimed.
+const groups = [
+  { id: 'servers', icon: 'server', title: 'Servers and systems', text: 'Installing, configuring, upgrading, and maintaining the servers your organization depends on.' },
+  { id: 'networking', icon: 'network', title: 'Networking', text: 'Planning and building the wired and wireless networks that connect your people and devices.' },
+  { id: 'cloud', icon: 'cloud', title: 'Cloud and backup', text: 'Setting up cloud services and planning how your data is stored, protected, and restored.' },
+];
+const servers = [
+  { icon: 'server', title: 'Server installation, configuration, and maintenance', text: 'Setting servers up for your needs and keeping them maintained over time.' },
+  { icon: 'upload', title: 'Infrastructure upgrades and migration projects', text: 'Planning and carrying out upgrades or moves from older systems to newer ones.' },
+  { icon: 'clipboard', title: 'IT infrastructure assessment and consultancy', text: 'Reviewing what you have, identifying gaps and risks, and advising on next steps.' },
+];
+const networking = [
+  { icon: 'building', title: 'Desktop and enterprise network infrastructure', text: 'Network foundations for offices of different sizes, from a few desks to larger sites.' },
+  { icon: 'network', title: 'LAN and WAN deployment', text: 'Connecting devices within a building and linking separate sites together.' },
+  { icon: 'plug', title: 'Structured cabling and fibre-optic infrastructure', text: 'Organized network cabling and, where offered, fibre-optic links.', note: 'Fibre-optic work is offered where available.' },
+  { icon: 'wifi', title: 'Wi-Fi deployment and configuration', text: 'Planning and setting up wireless coverage for your premises.' },
+  { icon: 'search', title: 'Network troubleshooting and optimization', text: 'Finding the cause of connectivity problems and tuning the network to work better.' },
+];
+const cloud = [
+  { icon: 'cloud', title: 'Cloud infrastructure setup and administration', text: 'Setting up cloud resources and administering them as your needs change.' },
+  { icon: 'database', title: 'Storage, backup, and recovery planning', text: 'Deciding where data lives, how it is backed up, and how it can be restored.' },
+];
+const benefits = [
+  { icon: 'users', title: 'People can reach what they need', text: 'Well-planned networks and servers help staff get to the systems and files they work with.' },
+  { icon: 'database', title: 'Data has a plan behind it', text: 'Backup and recovery planning helps you decide how information is protected and restored.' },
+  { icon: 'chart', title: 'Growth is easier to plan', text: 'A clear picture of your infrastructure makes it easier to decide when and where to invest.' },
+];
+const steps = [
+  { title: 'Assessment', text: 'We review your premises, equipment, and requirements.' },
+  { title: 'Design and planning', text: 'We propose a design, scope, and plan for your approval.' },
+  { title: 'Installation and configuration', text: 'We install and configure equipment and services as agreed.' },
+  { title: 'Testing', text: 'We check that everything works as intended before handover.' },
+  { title: 'Handover and support', text: 'We hand the project over and remain available for support.' },
+];
+const needs = [
+  'Setting up IT for a new office', 'Expanding to additional rooms, floors, or sites', 'Replacing or upgrading ageing servers',
+  'Wi-Fi that does not cover the whole building', 'Moving some services to the cloud', 'Unclear or untested backup arrangements',
+  'Recurring network faults or slow connections', 'A review of existing infrastructure before investing',
+];
+const faqs = [
+  { q: 'What does an infrastructure assessment involve?', a: 'We review your current servers, network, cloud services, and backup arrangements against what your organization needs, then explain what we found and what we recommend. The scope is agreed with you first.' },
+  { q: 'Do you install network cabling and fibre?', a: 'Structured network cabling is part of our service. Fibre-optic infrastructure is offered where available, so tell us about your site and we will confirm what is possible.' },
+  { q: 'Can you help us move to the cloud?', a: 'We help with cloud infrastructure setup and administration, and with migration projects. We will discuss what suits your needs before recommending an approach.' },
+  { q: 'Can you improve our network speed?', a: 'We troubleshoot and optimize networks, but results depend on your equipment, premises, and the connection you have. We do not promise specific speed improvements; we will tell you what we find.' },
+  { q: 'Which vendors or brands do you work with?', a: 'We recommend equipment and services that fit your requirements. If you already use particular products, tell us and we will assess how to work with them.' },
+  { q: 'How much does an infrastructure project cost?', a: 'It depends on the scope, so we do not publish prices. After an assessment, we prepare a quotation for your approval.' },
+];
+const fields: Field[] = [
+  { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+  { name: 'email', label: 'Email address', type: 'email', required: true, autocomplete: 'email' },
+  { name: 'phone', label: 'Phone number', type: 'tel', autocomplete: 'tel' },
+  { name: 'organization', label: 'Organization', autocomplete: 'organization' },
+  { name: 'requirement', label: 'What do you need?', type: 'select', wide: true, options: ['Infrastructure assessment', 'Server installation or maintenance', 'Network or Wi-Fi deployment', 'Cabling or fibre', 'Cloud setup or administration', 'Backup and recovery planning', 'Network troubleshooting', 'Upgrade or migration project', 'Not sure yet'] },
+  { name: 'message', label: 'Describe your premises and requirements', type: 'textarea', required: true, hint: 'Number of users and sites, existing equipment, and what is not working or needs to change.' },
+];
+---
+<BaseLayout
+  title="Infrastructure, Cloud and Networking | Zeus System Technologies"
+  description="Server, network, Wi-Fi, cloud, and backup services from Zeus System Technologies. Request an infrastructure assessment for your organization."
+>
+  <ServiceHero
+    title="Build a Stronger Foundation for Your Technology."
+    lead="Servers, networks, cloud services, and backup are the foundation every system rests on. We plan, install, and maintain them so your organization can rely on what is underneath."
+    primary={{ label: 'Request a Consultation', href: '#enquire' }}
+    secondary={{ label: 'View Our Services', href: '/services/' }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: 'Infrastructure, Cloud and Networking' }]}
+    schemaName="IT Infrastructure, Cloud and Networking"
+    schemaDescription="Server, network, Wi-Fi, cloud, and backup planning, installation, and support."
+  >
+    <figure class="sp-figure">
+      <div class="sp-frame"><Diagram name="foundation" /></div>
+      <figcaption>Illustration: each layer of your technology rests on the one beneath it.</figcaption>
+    </figure>
+  </ServiceHero>
+
+  <section class="section" aria-labelledby="overview-title">
+    <div class="container">
+      <SectionHeading id="overview-title" title="Infrastructure services overview" intro="Ten services organized into three groups. Choose the area you need, or ask us for an assessment to find out where to start." />
+      <div class="sp-groupnav">
+        {groups.map((g) => (
+          <a href={`#${g.id}`}>
+            <span class="sp-icon"><SvcIcon name={g.icon} size={24} /></span>
+            <div><h3>{g.title}</h3><p>{g.text}</p></div>
+          </a>
+        ))}
+      </div>
+      <div style="margin-top:3rem"><OfferingGrid items={benefits} cols={3} variant="rows" /></div>
+    </div>
+  </section>
+
+  <section class="section section--mist" id="servers" aria-labelledby="servers-title">
+    <div class="container sp-split sp-split--even">
+      <div>
+        <SectionHeading id="servers-title" title="Servers and systems" intro="The machines at the centre of your operations, set up properly and kept in order." />
+        <OfferingGrid items={servers} cols={1} variant="rows" />
+      </div>
+      <div><div class="sp-frame" style="max-width:22rem;margin-inline:auto"><Diagram name="rack" /></div><p class="sp-note" style="color:var(--color-muted)">Illustration of a server rack, not a photograph of a client installation.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="networking" aria-labelledby="net-title">
+    <div class="container sp-split sp-split--even sp-split--flip">
+      <div>
+        <SectionHeading id="net-title" title="Networking" intro="Wired and wireless connections planned around your building and your people." />
+        <OfferingGrid items={networking} cols={1} variant="rows" />
+      </div>
+      <div class="sp-frame"><Diagram name="topology" /></div>
+    </div>
+  </section>
+
+  <section class="section section--mist" id="cloud" aria-labelledby="cloud-title">
+    <div class="container sp-split sp-split--even">
+      <div>
+        <SectionHeading id="cloud-title" title="Cloud and backup" intro="Cloud services and a clear plan for protecting and restoring your data." />
+        <OfferingGrid items={cloud} cols={1} variant="rows" />
+      </div>
+      <div class="sp-frame"><Diagram name="cloud" /></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeading id="process-title" title="Project implementation process" intro="From the first site review to handover." />
+      <ProcessSteps steps={steps} />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="needs-title">
+    <div class="container">
+      <SectionHeading id="needs-title" title="Typical client requirements" intro="Situations where clients ask for infrastructure support." />
+      <ul class="sp-checks">
+        {needs.map((n) => <li><SvcIcon name="check" size={20} /><span>{n}</span></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-title">
+    <div class="container">
+      <SectionHeading id="faq-title" title="Frequently asked questions" />
+      <Faq items={faqs} />
+    </div>
+  </section>
+
+  <EnquirySection
+    title="Request an Infrastructure Assessment"
+    text="Tell us about your premises and what you need. We will respond to discuss an assessment and the best way forward."
+    formId="infra-enquiry"
+    subject="Infrastructure assessment enquiry"
+    submitLabel="Request assessment"
+    fields={fields}
+    useServiceWeb3Forms
+    tips={['Number of users and sites', 'Equipment you already have', 'What is not working, or what is changing']}
+  />
+</BaseLayout>

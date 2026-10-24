@@ -1,0 +1,59 @@
+---
+import { company, services, training } from '../data/site';
+
+const year = new Date().getFullYear();
+const companyLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'About Us', href: '/about/' },
+  { label: 'Projects', href: '/projects/' },
+  { label: 'Contact Us', href: '/contact/' },
+  { label: 'Request a Quote', href: '/request-quote/' },
+];
+---
+<footer class="site-footer on-dark">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" aria-label="Zeus System Technologies, home">
+          <img src="/images/logo-zts.webp" alt="" width="640" height="489" loading="lazy" />
+        </a>
+        <p>
+          {company.brandName} provides technology services and solutions to individuals, small businesses, corporate
+          organizations, and government institutions from {company.address.city}, {company.address.country}.
+        </p>
+      </div>
+
+      <nav aria-label="Services">
+        <h2>Services</h2>
+        <ul>
+          {services.map((s) => (
+            <li><a href={s.href}>{s.short}</a></li>
+          ))}
+          <li><a href={training.href}>{training.title}</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Company">
+        <h2>Company</h2>
+        <ul>
+          {companyLinks.map((l) => (
+            <li><a href={l.href}>{l.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div>
+        <h2>Contact</h2>
+        <address>
+          <span>{company.address.street}, {company.address.area}, {company.address.city}, {company.address.country}</span>
+          <a href={company.phoneHref}>{company.phone}</a>
+          <a href={`mailto:${company.email}`}>{company.email}</a>
+        </address>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {year} {company.legalName} All rights reserved.</p>
+    </div>
+  </div>
+</footer>

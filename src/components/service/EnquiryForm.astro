@@ -1,0 +1,244 @@
+---
+// Shared enquiry form. Web3Forms is enabled only on Contact and Request a Quote.
+// It never reports success unless that endpoint answers with a successful response.
+// Spam handling: hidden honeypot field + minimum-time check here; add CAPTCHA/rate limiting at the form provider.
+import { company } from '../../data/site';
+import FormField from './FormField.astro';
+import type { Field } from './types';
+
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+
+interface Props {
+  id: string;
+  fields: Field[];
+  subject: string;
+  submitLabel: string;
+  successMessage?: string;
+  web3FormsKey?: string;
+}
+const { id, fields, subject, submitLabel, successMessage, web3FormsKey } = Astro.props;
+
+// Consecutive fields sharing a `section` render inside one titled fieldset; fields without one render in a plain grid.
+const groups: { title?: string; no?: number; fields: Field[] }[] = [];
+let counter = 0;
+for (const f of fields) {
+  const last = groups[groups.length - 1];
+  if (last && last.title === f.section) last.fields.push(f);
+  else groups.push({ title: f.section, no: f.section ? ++counter : undefined, fields: [f] });
+}
+---
+<form
+  class="sp-form"
+  id={id}
+  novalidate
+  data-enquiry
+  data-subject={subject}
+  data-endpoint={web3FormsKey !== undefined ? WEB3FORMS_ENDPOINT : ''}
+  data-key={web3FormsKey ?? ''}
+  data-email={company.email}
+  data-phone={company.phone}
+  data-success={successMessage}
+>
+  {groups.map((g) =>
+    g.title ? (
+      <fieldset class="sp-section">
+        <legend><span class="sp-section-no" aria-hidden="true">{g.no}</span>{g.title}</legend>
+        <div class="sp-fields">{g.fields.map((f) => <FormField f={f} formId={id} />)}</div>
+      </fieldset>
+    ) : (
+      <div class="sp-fields">{g.fields.map((f) => <FormField f={f} formId={id} />)}</div>
+    )
+  )}
+  <div class="sp-hp" aria-hidden="true">
+    <label>Leave this field empty<input type="text" name="botcheck" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <button class="btn btn--primary sp-submit" type="submit">{submitLabel}</button>
+  <div class="sp-status" role="status" aria-live="polite" tabindex="-1" data-status hidden></div>
+</form>
+
+<script>
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const PHONE_RE = /^\+?[\d\s()\-]{7,}$/;
+  const MIN_FILL_MS = 1500; // a person cannot complete a form faster than this
+
+  document.querySelectorAll<HTMLFormElement>('form[data-enquiry]').forEach((form) => {
+    const loadedAt = Date.now();
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('.sp-submit')!;
+    const isBox = (c: Element): c is HTMLInputElement => c instanceof HTMLInputElement && c.type === 'checkbox';
+    type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    // Every answerable item in DOM order: named controls and checkbox groups (the honeypot is excluded).
+    const items = () =>
+      Array.from(form.querySelectorAll<HTMLElement>('input[name], select, textarea, [data-checkgroup]')).filter(
+        (el) => !(el instanceof HTMLInputElement && el.name === 'botcheck')
+      );
+    const groupBoxes = (g: HTMLElement) => Array.from(g.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'));
+    const groupValues = (g: HTMLElement) => groupBoxes(g).filter((b) => b.checked).map((b) => b.value);
+
+    // Carry choices from the Services page quote builder / "Not sure" box into the form.
+    const params = new URLSearchParams(window.location.search);
+    const interests = params.getAll('interest');
+    const message = form.querySelector<HTMLTextAreaElement>('textarea[name="message"], textarea[name="requirements"]');
+    const carried = [params.get('message'), ...interests].filter(Boolean) as string[];
+    if (message && carried.length && !message.value) message.value = carried.join('\n');
+    form.querySelectorAll<HTMLElement>('[data-checkgroup]').forEach((g) => {
+      const cats = interests.map((v) => v.split(':')[0].trim());
+      groupBoxes(g).forEach((b) => {
+        if (cats.includes(b.value)) b.checked = true;
+      });
+    });
+
+    function show(kind: 'ok' | 'error' | 'info', text: string, mailto?: string) {
+      status.className = `sp-status sp-status--${kind}`;
+      status.textContent = '';
+      const p = document.createElement('p');
+      p.textContent = text;
+      status.appendChild(p);
+      if (mailto) {
+        const a = document.createElement('a');
+        a.className = 'btn btn--outline btn--sm';
+        a.href = mailto;
+        a.textContent = 'Open an email draft';
+        status.appendChild(a);
+      }
+      status.hidden = false;
+      status.focus();
+    }
+
+    function setError(c: HTMLElement, msg: string) {
+      const err = form.querySelector<HTMLElement>(`#${c.id}-err`)!;
+      err.textContent = msg;
+      err.hidden = false;
+      c.setAttribute('aria-invalid', 'true');
+    }
+    function setGroupError(g: HTMLElement, msg: string) {
+      const err = g.querySelector<HTMLElement>('.sp-error')!;
+      err.textContent = msg;
+      err.hidden = false;
+      groupBoxes(g).forEach((b) => b.setAttribute('aria-invalid', 'true'));
+    }
+    function clearErrors() {
+      form.querySelectorAll<HTMLElement>('.sp-error').forEach((e) => {
+        e.hidden = true;
+        e.textContent = '';
+      });
+      form.querySelectorAll<HTMLElement>('[aria-invalid]').forEach((c) => c.removeAttribute('aria-invalid'));
+      status.hidden = true;
+    }
+
+    function summary() {
+      return items()
+        .map((el) => {
+          if (el.matches('[data-checkgroup]')) {
+            const v = groupValues(el);
+            return v.length ? `${el.dataset.label ?? 'Selection'}: ${v.join(', ')}` : '';
+          }
+          const c = el as Control;
+          if (isBox(c)) return c.checked ? `${c.dataset.label ?? c.name}: Yes` : '';
+          return c.value.trim() ? `${c.dataset.label ?? c.name}: ${c.value.trim()}` : '';
+        })
+        .filter(Boolean)
+        .join('\n');
+    }
+    function mailtoHref() {
+      const to = form.dataset.email ?? '';
+      return `mailto:${to}?subject=${encodeURIComponent(form.dataset.subject ?? 'Enquiry')}&body=${encodeURIComponent(summary())}`;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      let first: HTMLElement | null = null;
+      for (const el of items()) {
+        if (el.matches('[data-checkgroup]')) {
+          if (el.dataset.required === 'true' && groupValues(el).length === 0) {
+            setGroupError(el, el.dataset.requiredMessage ?? 'Please choose at least one option.');
+            first ??= groupBoxes(el)[0];
+          }
+          continue;
+        }
+        const c = el as Control;
+        const label = (c.dataset.label ?? 'this field').toLowerCase();
+        let msg = '';
+        if (isBox(c)) {
+          if (c.required && !c.checked) msg = c.dataset.requiredMessage ?? 'Please tick this box to continue.';
+        } else {
+          const v = c.value.trim();
+          if (c.required && !v) msg = c.tagName === 'SELECT' ? `Please choose ${label}.` : `Please enter ${label}.`;
+          else if (c instanceof HTMLInputElement && c.type === 'email' && v && !EMAIL_RE.test(v)) msg = 'Enter a valid email address, for example name@example.com.';
+          else if (c instanceof HTMLInputElement && c.type === 'tel' && v && !PHONE_RE.test(v)) msg = 'Enter a valid phone number, for example +234 800 000 0000.';
+        }
+        if (msg) {
+          setError(c, msg);
+          first ??= c;
+        }
+      }
+      if (first) {
+        first.focus();
+        return;
+      }
+
+      // Spam layers: honeypot (hidden field) and minimum fill time. Add CAPTCHA / rate limiting at the form provider.
+      if ((form.querySelector<HTMLInputElement>('input[name="botcheck"]')?.value ?? '') !== '') return;
+      if (Date.now() - loadedAt < MIN_FILL_MS) {
+        show('info', 'That was very quick. Please check your details and submit again.');
+        return;
+      }
+
+      const endpoint = form.dataset.endpoint;
+      const accessKey = form.dataset.key;
+      if (!endpoint || !accessKey) {
+        show(
+          'info',
+          `Online submission is not available yet, so your message has not been sent. Email it to ${form.dataset.email} using the button below, or call ${form.dataset.phone}.`,
+          mailtoHref()
+        );
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending…';
+      form.setAttribute('aria-busy', 'true');
+      try {
+        const body = new FormData(form);
+        body.delete('botcheck');
+        // Checkbox groups are sent as one comma-separated field (providers handle repeated keys inconsistently).
+        form.querySelectorAll<HTMLElement>('[data-checkgroup]').forEach((g) => body.set(g.dataset.checkgroup!, groupValues(g).join(', ')));
+        // The provider's email subject line. If the visitor typed their own subject (Contact form), keep it as its own field too.
+        const base = form.dataset.subject ?? 'Enquiry';
+        const typed = String(body.get('subject') ?? '').trim();
+        body.set('subject', typed ? `${base}: ${typed}` : base);
+        if (typed) body.set('enquiry_subject', typed);
+        body.set('access_key', accessKey);
+        body.set('page', window.location.href);
+        const payload = Object.fromEntries(body.entries());
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        let result: { success?: boolean };
+        try {
+          result = await res.json();
+        } catch (error) {
+          throw new Error('Web3Forms returned an invalid response.', { cause: error });
+        }
+        if (res.status !== 200 || result.success !== true) throw new Error('Web3Forms rejected the submission.');
+        form.reset();
+        show('ok', form.dataset.success ?? 'Thank you. Your enquiry has been sent. We will reply using the contact details you provided.');
+      } catch {
+        show(
+          'error',
+          `We could not send your enquiry. Please try again, or contact us at ${form.dataset.email} or ${form.dataset.phone}.`,
+          mailtoHref()
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = button.dataset.label ?? 'Send enquiry';
+        form.removeAttribute('aria-busy');
+      }
+    });
+    button.dataset.label = button.textContent ?? 'Send enquiry';
+  });
+</script>

@@ -1,0 +1,124 @@
+---
+import '../styles/service-page.css';
+import '../styles/contact.css';
+import '../styles/quote.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceHero from '../components/service/ServiceHero.astro';
+import EnquiryForm from '../components/service/EnquiryForm.astro';
+import ProcessSteps from '../components/service/ProcessSteps.astro';
+import SvcIcon from '../components/service/SvcIcon.astro';
+import QuoteFlow from '../components/quote/QuoteFlow.astro';
+import type { Field } from '../components/service/types';
+import { services, training } from '../data/site';
+
+// Delivery uses Web3Forms through the shared form when PUBLIC_QUOTE_FORM_ACCESS_KEY is configured at build time.
+// With no key configured the form says plainly that nothing was sent. No response time is promised anywhere.
+const serviceOptions = [...services.map((s) => s.title), training.title, 'Other'];
+const fields: Field[] = [
+  { section: 'Your details', name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+  { section: 'Your details', name: 'organization', label: 'Organization', hint: 'Optional.', autocomplete: 'organization' },
+  { section: 'Your details', name: 'email', label: 'Email address', type: 'email', required: true, autocomplete: 'email' },
+  { section: 'Your details', name: 'phone', label: 'Phone number', type: 'tel', required: true, autocomplete: 'tel' },
+  { section: 'What do you need?', name: 'services', label: 'Which services are you interested in?', type: 'checkboxes', required: true, options: serviceOptions, hint: 'Choose all that apply.', requiredMessage: 'Please choose at least one service.' },
+  { section: 'About the project', name: 'message', label: 'Brief description of the requirement', type: 'textarea', rows: 4, required: true, hint: 'Describe what you need in a few sentences.' },
+  { section: 'About the project', name: 'context', label: 'Intended users or business context', type: 'textarea', rows: 3, required: true, hint: 'Who will use it, and what your organization does.' },
+  { section: 'About the project', name: 'location', label: 'Project location', hint: 'Optional. City or area.', autocomplete: 'address-level2' },
+  { section: 'About the project', name: 'budget', label: 'Estimated budget range', hint: 'Optional. A rough figure or range in naira, or leave blank.', placeholder: 'e.g. ₦1,500,000' },
+  { section: 'About the project', name: 'timeline', label: 'Desired timeline', type: 'select', hint: 'Optional.', options: ['As soon as possible', 'Less than 1 month', '1 to 3 months', '3 to 6 months', 'More than 6 months', 'Flexible or not sure yet'] },
+  { section: 'About the project', name: 'additional', label: 'Additional requirements', type: 'textarea', rows: 3, hint: 'Optional. Anything else we should know.' },
+  {
+    name: 'privacy',
+    label: 'I agree that Zeus System Technologies may use these details to respond to my request, as described in the',
+    type: 'checkbox',
+    required: true,
+    link: { text: 'privacy notice', href: '#privacy' },
+    requiredMessage: 'Please confirm that you have read the privacy notice.',
+    summaryLabel: 'Privacy notice acknowledged',
+  },
+];
+const steps = [
+  { title: 'We review your request', text: 'We read what you have sent and consider what the project involves.' },
+  { title: 'We follow up if needed', text: 'If we need more detail, we will contact you with questions or suggest a short conversation.' },
+  { title: 'You receive a response', text: 'We prepare a response, such as a quotation or a recommended approach, for you to consider. Nothing is agreed until you approve it.' },
+];
+---
+<BaseLayout
+  title="Request a Quote | Zeus System Technologies"
+  description="Request a quote from Zeus System Technologies. Tell us about your IT, web, software, infrastructure, hardware, security, or training requirement."
+>
+  <ServiceHero
+    title="Let’s Scope Your Next Technology Project."
+    lead="Tell us what you need. A few details are enough to get started, and the budget and timeline are entirely optional."
+    primary={{ label: 'Start Your Request', href: '#quote-form' }}
+    secondary={{ label: 'Contact Us', href: '/contact/' }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Request a Quote' }]}
+  >
+    <figure class="sp-figure">
+      <div class="sp-frame"><QuoteFlow /></div>
+      <figcaption>Four short sections. Only the details marked required are needed.</figcaption>
+    </figure>
+  </ServiceHero>
+
+  <section class="section section--mist" aria-labelledby="form-title">
+    <div class="container qt-layout">
+      <div class="qt-intro">
+        <h2 id="form-title">Request a quote</h2>
+        <p>The more we understand about your requirement, the better we can prepare an appropriate response.</p>
+        <ul class="ct-tips">
+          <li><SvcIcon name="check" size={18} />Describe the problem or goal, not just the solution</li>
+          <li><SvcIcon name="check" size={18} />Mention who will use the result</li>
+          <li><SvcIcon name="check" size={18} />Share a budget or deadline only if you wish to</li>
+        </ul>
+      </div>
+      <div class="sp-form-wrap ct-form-wrap qt-form">
+        <EnquiryForm
+          id="quote-form"
+          fields={fields}
+          subject="Quote request"
+          submitLabel="Send quote request"
+          web3FormsKey={import.meta.env.PUBLIC_QUOTE_FORM_ACCESS_KEY ?? ''}
+          successMessage="Thank you. Your quote request has been sent. We will review the details and contact you using the email address or phone number you provided to discuss next steps."
+        />
+      </div>
+      <div class="ct-privacy qt-privacy" id="privacy" tabindex="-1">
+        <h3>Privacy notice</h3>
+        <p>We use the details you send through this form to understand your requirement and to respond to your request. We ask only for the information needed for that purpose.</p>
+        <p>Please do not include passwords, payment details, or other sensitive information. This is a short statement of how we intend to use your details. A full privacy policy has not been published on this site yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="next-title">
+    <div class="container">
+      <SectionHeading id="next-title" title="What happens after you send your request" intro="The time needed depends on what you ask for, so we do not promise a fixed response time." />
+      <ProcessSteps steps={steps} />
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // A conditional hint (not a conditional field): the description prompt adapts to the services chosen.
+  const hints: Record<string, string> = {
+    'IT Managed Services': 'How many users and devices you have, and the problems you want solved.',
+    'Web Development': 'Pages or features you need, content you have, and examples you like.',
+    'Software Development': 'What happens today, who would use the software, and which systems it must work with.',
+    'IT Infrastructure, Cloud and Networking': 'Your premises, existing equipment, and what is not working or needs to change.',
+    'Hardware Sales, Repairs and Maintenance': 'The equipment and quantities you need, or the fault you are seeing.',
+    'Home Automation and CCTV': 'The premises, the areas you want to cover or control, and any equipment you already have.',
+    'Technology Training': 'What you want to learn, your current level, and how many people will attend.',
+    Other: 'Describe what you need in your own words.',
+  };
+  const fallback = 'Describe what you need in a few sentences.';
+  const group = document.querySelector<HTMLElement>('[data-checkgroup="services"]');
+  const hint = document.getElementById('quote-form-message-hint');
+  function updateHint() {
+    if (!group || !hint) return;
+    const picked = Array.from(group.querySelectorAll<HTMLInputElement>('input:checked')).map((b) => b.value);
+    hint.textContent = picked.length === 1 ? hints[picked[0]] ?? fallback : picked.length > 1 ? 'Describe each part of the project you want help with.' : fallback;
+  }
+  group?.addEventListener('change', updateHint);
+  updateHint();
+  // The shared form script may pre-tick services from the URL; re-sync once every script has run.
+  document.addEventListener('DOMContentLoaded', updateHint);
+</script>

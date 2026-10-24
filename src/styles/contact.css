@@ -1,0 +1,160 @@
+/* Contact page (prefix ct-) plus the checkbox control used by the shared enquiry form. Works alongside service-page.css. */
+@layer components {
+  .ct-card {
+    display: grid;
+    background: var(--color-navy-900);
+    border: 1px solid var(--color-navy-700);
+    border-radius: var(--radius-md);
+    box-shadow: 0 24px 48px -28px rgba(0, 0, 0, 0.8);
+  }
+  .ct-card li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--color-navy-700);
+  }
+  .ct-card li:last-child {
+    border-bottom: 0;
+  }
+  .ct-card .sp-icon {
+    background: var(--color-navy-800);
+  }
+  .ct-label {
+    display: block;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    color: var(--color-soft-muted);
+  }
+  .ct-card a,
+  .ct-card address {
+    font-size: 1.1rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .ct-card a {
+    text-underline-offset: 3px;
+  }
+  .ct-card a:hover {
+    text-decoration: underline;
+  }
+  .ct-card .ct-map {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-cyan-400);
+    text-decoration: underline;
+  }
+
+  .ct-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .ct-grid h2 {
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+  }
+  .ct-side > p {
+    margin-top: 1rem;
+    max-width: 30rem;
+    font-size: 1.1rem;
+    color: var(--color-muted);
+  }
+  .ct-tips {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+  .ct-tips li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    color: var(--color-muted);
+  }
+  .ct-tips svg {
+    color: var(--color-cyan-700);
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+  .ct-privacy {
+    margin-top: 2rem;
+    padding: 1.25rem 1.5rem;
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-navy-900);
+    border-radius: var(--radius-md);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .ct-privacy h3 {
+    font-size: 1.1rem;
+  }
+  .ct-privacy p {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--color-muted);
+  }
+  .ct-form-wrap {
+    border: 1px solid var(--color-line);
+    box-shadow: 0 18px 40px -28px rgba(6, 15, 32, 0.35);
+  }
+  #contact-form {
+    scroll-margin-top: calc(var(--header-h) + 1.5rem);
+  }
+  .ct-browse {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .ct-browse a {
+    padding: 0.45rem 0.95rem;
+    background: #fff;
+    border: 1.5px solid var(--color-line);
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 0.925rem;
+    text-decoration: none;
+  }
+  .ct-browse a:hover {
+    border-color: var(--color-cyan-500);
+    color: var(--color-cyan-700);
+  }
+  @media (min-width: 960px) {
+    .ct-grid {
+      grid-template-columns: 4fr 6fr;
+      gap: 4rem;
+    }
+  }
+
+  /* Checkbox control for the shared enquiry form */
+  .sp-field .sp-check {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+  .sp-field .sp-check label {
+    display: inline;
+    margin: 0;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .sp-field .sp-check input[type="checkbox"] {
+    width: 1.35rem;
+    height: 1.35rem;
+    min-height: 0;
+    margin-top: 0.15rem;
+    padding: 0;
+    accent-color: var(--color-navy-900);
+  }
+  .sp-field .sp-check input[aria-invalid="true"] {
+    outline: 2px solid #b3261e;
+    outline-offset: 2px;
+  }
+  .sp-check a {
+    color: var(--color-cyan-700);
+    text-underline-offset: 3px;
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company } from '../data/site';
+
+const activities = [
+  'IT managed services and technical support',
+  'Website design, development, and hosting',
+  'Custom software development and maintenance',
+  'IT infrastructure, cloud services, and networking',
+  'Hardware sales, installation, and repair',
+  'Home automation, CCTV, and security systems',
+  'Database management and data warehousing',
+  'IT consultancy and technology training',
+  'Hardware and software procurement and supply',
+];
+
+const values = [
+  { title: 'Innovation', text: 'We look for practical ways to apply current technology to real requirements.' },
+  { title: 'Collaboration', text: 'We work with you and your team, so solutions reflect how your organization actually operates.' },
+  { title: 'Excellence', text: 'We aim for careful, well-finished work in every installation, build, and repair.' },
+  { title: 'Integrity', text: 'We give honest advice and clear recommendations, including when the right choice is the simpler one.' },
+  { title: 'Customer-Centricity', text: 'Your requirements guide what we recommend and how we support you afterwards.' },
+];
+
+const steps = [
+  { title: 'Understand', text: 'We start by learning how you work and what you need technology to do.' },
+  { title: 'Plan', text: 'We outline practical options, with a recommendation that fits your requirements and budget.' },
+  { title: 'Implement', text: 'We supply, install, build, and configure the solution so it is ready for use.' },
+  { title: 'Support', text: 'We provide maintenance and technical support so your systems keep running.' },
+  { title: 'Improve', text: 'We review how things are working and recommend improvements as your needs change.' },
+];
+---
+<BaseLayout
+  title="About Us | Zeus System Technologies"
+  description="Learn about Zeus System Technologies, its services, values, and approach to providing technology solutions, consulting, and training from Abuja."
+>
+  <PageHero
+    title="Technology Solutions Built Around Your Needs."
+    lead={`${company.legalName} provides technology solutions, consulting, and training to individuals, businesses, and institutions.`}
+  />
+
+  <section class="section" aria-labelledby="who-title">
+    <div class="container about-intro">
+      <div>
+        <h2 id="who-title">Who we are</h2>
+        <p class="lede">
+          {company.legalName}, operating publicly as {company.brandName}, was founded in {company.founded}. We provide
+          technology solutions, consulting, and training to individuals, small and medium-sized businesses, corporate
+          organizations, and government institutions.
+        </p>
+        <dl class="about-facts">
+          <div><dt>Registered name</dt><dd>{company.legalName}</dd></div>
+          <div><dt>Brand name</dt><dd>{company.brandName}</dd></div>
+          <div><dt>Founded</dt><dd>{company.founded}</dd></div>
+          <div>
+            <dt>Office</dt>
+            <dd>
+              <address>
+                {company.address.street}, {company.address.area}, {company.address.city}, {company.address.country}
+              </address>
+            </dd>
+          </div>
+          <div><dt>Phone</dt><dd><a href={company.phoneHref}>{company.phone}</a></dd></div>
+          <div><dt>Email</dt><dd><a href={`mailto:${company.email}`}>{company.email}</a></dd></div>
+        </dl>
+      </div>
+      <figure class="about-figure">
+        <img
+          src="/images/zeus-logo-3d.webp"
+          alt="The Zeus Technologies logo rendered as a three-dimensional sign"
+          width="1200"
+          height="821"
+          loading="lazy"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="story-title">
+    <div class="container story-grid">
+      <div class="story-copy">
+        <h2 id="story-title">Our story</h2>
+        <p>
+          {company.legalName} was founded in {company.founded}. Its registered business covers a wide range of
+          technology work, from IT support, software, and websites to infrastructure, hardware, security systems, data
+          management, consultancy, and training.
+        </p>
+        <p>
+          That breadth shapes how we work. The same company can advise on a requirement, supply and set up the equipment
+          or software, and support it afterwards. We treat these services as one connected portfolio, so a decision about
+          a network, a website, or a security system is made with the rest of your technology in mind.
+        </p>
+      </div>
+      <div class="activities">
+        <h3>Registered business activities</h3>
+        <ul>
+          {activities.map((activity) => <li>{activity}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark on-dark" aria-label="Mission and vision">
+    <div class="container mv-grid">
+      <div class="mv">
+        <h2>Our mission</h2>
+        <p class="statement">
+          Empowering businesses and individuals with cutting-edge technology solutions, innovative consulting, and
+          transformative training—driving digital excellence and sustainable growth.
+        </p>
+      </div>
+      <div class="mv">
+        <h2>Our vision</h2>
+        <p class="statement">
+          To be a leading technology solutions provider, recognized for innovation, excellence, and customer-centric
+          services that drive digital transformation and business growth globally.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-title">
+    <div class="container values-grid">
+      <SectionHeading id="values-title" title="Core values" intro="The principles we use to guide our work and our relationships with clients." />
+      <div class="value-list">
+        {values.map((value) => (
+          <div class="value-row">
+            <h3>{value.title}</h3>
+            <p>{value.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="approach-title">
+    <div class="container">
+      <SectionHeading
+        id="approach-title"
+        title="Our approach"
+        intro="From the first conversation to long-term support, we work in five steps. We aim for a relationship that continues after installation, built on listening first and explaining options plainly."
+      />
+      <ol class="process process--5">
+        {steps.map((step, index) => (
+          <li class="step">
+            <span class="step-num" aria-hidden="true">{index + 1}</span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand title="Work With Us." text="Tell us about your requirements and we will recommend a practical way forward." />
+</BaseLayout>

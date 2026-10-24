@@ -1,0 +1,136 @@
+---
+import '../../styles/service-page.css';
+import '../../styles/projects.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Button from '../../components/Button.astro';
+import ServiceHero from '../../components/service/ServiceHero.astro';
+import OfferingGrid from '../../components/service/OfferingGrid.astro';
+import SvcIcon from '../../components/service/SvcIcon.astro';
+import Diagram from '../../components/service/visuals/Diagram.astro';
+import WebMock from '../../components/service/visuals/WebMock.astro';
+import ProjectCard from '../../components/projects/ProjectCard.astro';
+import CaseStudyAnatomy from '../../components/projects/CaseStudyAnatomy.astro';
+import { projects } from '../../data/projects';
+import { illustrativeScenarios } from '../../data/illustrative-scenarios';
+import { categoryOrder } from '../../data/project-model';
+
+// Verified projects only (src/data/projects.ts). Illustrative scenarios are always labeled and kept separate.
+const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const groups = categoryOrder
+  .map((category) => ({ category, id: `cat-${slugify(category)}`, items: projects.filter((p) => p.category === category) }))
+  .filter((g) => g.items.length > 0);
+const hasProjects = projects.length > 0;
+
+const format = [
+  { icon: 'search', title: 'The need', text: 'The problem or business requirement, described plainly.' },
+  { icon: 'bulb', title: 'The solution', text: 'What was proposed, and why it suited the requirement.' },
+  { icon: 'clipboard', title: 'Services involved', text: 'Which Zeus services were used, linked to their pages.' },
+  { icon: 'workflow', title: 'Implementation approach', text: 'How the work was carried out, step by step.' },
+  { icon: 'check', title: 'Outcomes, where verified', text: 'Results are shown only when they are documented and confirmed.' },
+  { icon: 'browser', title: 'Approved visuals', text: 'Images and screenshots appear only with approval.' },
+];
+
+const listLd = hasProjects
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Projects and case studies',
+      url: new URL('/projects/', Astro.site).href,
+      mainEntity: { '@type': 'ItemList', itemListElement: projects.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p.title, url: new URL(p.href, Astro.site).href })) },
+    }
+  : null;
+---
+<BaseLayout
+  title="Projects and Case Studies | Zeus System Technologies"
+  description="See how Zeus System Technologies approaches technology problems, from understanding the need to implementation. Verified case studies will appear here."
+>
+  {listLd && <script type="application/ld+json" set:html={JSON.stringify(listLd)} />}
+
+  <ServiceHero
+    title="Practical Solutions. Thoughtful Execution."
+    lead="See how Zeus System Technologies approaches a technology problem: understanding the need, recommending a practical solution, and carrying it through."
+    primary={{ label: 'Discuss Your Requirement', href: '/contact/' }}
+    secondary={{ label: 'View Services', href: '/services/' }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Projects' }]}
+  >
+    <figure class="sp-figure">
+      <div class="sp-frame"><CaseStudyAnatomy /></div>
+      <figcaption>The structure every case study follows. No project content is shown here.</figcaption>
+    </figure>
+  </ServiceHero>
+
+  <section class="section" id="work" aria-labelledby="work-title">
+    <div class="container">
+      <SectionHeading
+        id="work-title"
+        title="Case studies"
+        intro={hasProjects ? 'Verified projects, organized by the service involved.' : 'Verified, approved project case studies will be published here.'}
+      />
+
+      {hasProjects ? (
+        <>
+          {groups.length > 1 && (
+            <nav class="pj-jump" aria-label="Jump to a service category">
+              {groups.map((g) => <a href={`#${g.id}`}>{g.category} ({g.items.length})</a>)}
+            </nav>
+          )}
+          {groups.map((g) => (
+            <section class="pj-group" aria-labelledby={`${g.id}-title`}>
+              <h3 id={`${g.id}-title`}><span id={g.id}>{g.category}</span></h3>
+              <div class="pj-grid">
+                {g.items.map((p) => <ProjectCard project={p} />)}
+              </div>
+            </section>
+          ))}
+        </>
+      ) : (
+        <div class="pj-empty">
+          <span class="sp-icon"><SvcIcon name="clipboard" size={26} /></span>
+          <h3>Case studies are being prepared</h3>
+          <p>
+            We only publish projects, images, and results that have been verified and approved, so nothing on this page
+            describes client work until it is ready. In the meantime, the scenarios below show how we approach common
+            requirements, and you are welcome to talk to us about your own.
+          </p>
+          <div class="hero-actions">
+            <Button href="/contact/">Discuss your requirement</Button>
+            <Button href="/services/" variant="outline">View services</Button>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="format-title">
+    <div class="container">
+      <SectionHeading id="format-title" title="How we document a project" intro="Every case study will follow the same format, so you can see the need, the thinking, and the delivery." />
+      <OfferingGrid items={format} cols={3} variant="cards" />
+    </div>
+  </section>
+
+  <section class="section" id="scenarios" aria-labelledby="scn-title">
+    <div class="container">
+      <SectionHeading id="scn-title" title="How we would approach common requirements" />
+      <div class="pj-banner" role="note">
+        <SvcIcon name="bulb" size={24} />
+        <div>
+          <strong>Illustrative scenarios, not completed projects</strong>
+          <p>These are hypothetical examples written to show our approach. They do not describe any client, result, or metric, and they are not part of our project history.</p>
+        </div>
+      </div>
+      <div class="pj-grid pj-grid--3">
+        {illustrativeScenarios.map((s) => (
+          <ProjectCard project={s} illustrative>
+            {s.slug === 'example-office-network' && <Diagram name="topology" />}
+            {s.slug === 'example-request-tracking' && <Diagram name="workflow" />}
+            {s.slug === 'example-business-website' && <WebMock device="browser" variant="business" />}
+          </ProjectCard>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Have a Similar Requirement?" text="Tell us what you are trying to solve and we will recommend a practical way forward." />
+</BaseLayout>

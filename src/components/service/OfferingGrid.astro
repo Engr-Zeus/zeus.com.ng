@@ -1,0 +1,19 @@
+---
+import SvcIcon from './SvcIcon.astro';
+interface Item { title: string; text: string; icon?: string; note?: string }
+interface Props { items: Item[]; cols?: 1 | 2 | 3 | 4; variant?: 'rows' | 'cards' | 'dark'; numbered?: boolean }
+const { items, cols = 2, variant = 'rows', numbered = false } = Astro.props;
+---
+<ul class:list={['sp-grid', `sp-grid--${variant}`, `sp-cols-${cols}`]}>
+  {items.map((it, i) => (
+    <li class="sp-item">
+      {it.icon && <span class="sp-icon"><SvcIcon name={it.icon} size={24} /></span>}
+      {numbered && !it.icon && <span class="sp-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>}
+      <div>
+        <h3>{it.title}</h3>
+        <p>{it.text}</p>
+        {it.note && <p class="sp-note">{it.note}</p>}
+      </div>
+    </li>
+  ))}
+</ul>

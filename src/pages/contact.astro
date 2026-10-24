@@ -1,0 +1,137 @@
+---
+import '../styles/service-page.css';
+import '../styles/contact.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceHero from '../components/service/ServiceHero.astro';
+import EnquiryForm from '../components/service/EnquiryForm.astro';
+import SvcIcon from '../components/service/SvcIcon.astro';
+import type { Field } from '../components/service/types';
+import { company, services, training } from '../data/site';
+import { additionalContactEmail, contactAddress } from '../data/contact';
+
+// Phone, email, and website come from src/data/site.ts. The address comes from src/data/contact.ts (see the note there).
+// Web3Forms delivers submissions when PUBLIC_FORM_ACCESS_KEY is configured at build time.
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contactAddress.oneLine)}`;
+const websiteLabel = company.url.replace(/^https?:\/\//, '');
+
+const fields: Field[] = [
+  { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+  { name: 'organization', label: 'Business or organization name', hint: 'Optional.', autocomplete: 'organization' },
+  { name: 'email', label: 'Email address', type: 'email', required: true, autocomplete: 'email' },
+  { name: 'phone', label: 'Phone number', type: 'tel', required: true, autocomplete: 'tel' },
+  {
+    name: 'service',
+    label: 'Service of interest',
+    type: 'select',
+    required: true,
+    wide: true,
+    options: [...services.map((s) => s.title), training.title, 'General enquiry or not sure yet'],
+  },
+  { name: 'subject', label: 'Subject', required: true, wide: true },
+  { name: 'message', label: 'Message', type: 'textarea', required: true, hint: 'What you need, who it is for, and anything that affects timing.' },
+  {
+    name: 'privacy',
+    label: 'I agree that Zeus System Technologies may use these details to respond to my enquiry, as described in the',
+    type: 'checkbox',
+    required: true,
+    link: { text: 'privacy notice', href: '#privacy' },
+    requiredMessage: 'Please confirm that you have read the privacy notice.',
+    summaryLabel: 'Privacy notice acknowledged',
+  },
+];
+
+const contactLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contact Zeus System Technologies',
+  url: new URL('/contact/', Astro.site).href,
+  mainEntity: {
+    '@type': 'Organization',
+    name: company.brandName,
+    url: company.url,
+    email: [company.email, additionalContactEmail],
+    telephone: company.phone,
+  },
+};
+---
+<BaseLayout
+  title="Contact Us | Zeus System Technologies"
+  description="Contact Zeus System Technologies by phone, email, or enquiry form. Tell us what you need and we will help you work out the solution."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(contactLd)} />
+
+  <ServiceHero
+    title="Tell Us What You Need. Let’s Work Out the Solution."
+    lead="Call us, send an email, or use the form below. Describe what you need and we will help you work out the right solution."
+    primary={{ label: 'Send a Message', href: '#contact-form' }}
+    secondary={{ label: `Call ${company.phone}`, href: company.phoneHref }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Contact Us' }]}
+  >
+    <ul class="ct-card" aria-label="Contact details">
+      <li>
+        <span class="sp-icon"><SvcIcon name="phone" size={22} /></span>
+        <div><span class="ct-label">Phone</span><a href={company.phoneHref}>{company.phone}</a></div>
+      </li>
+      <li>
+        <span class="sp-icon"><SvcIcon name="mail" size={22} /></span>
+        <div>
+          <span class="ct-label">Email</span>
+          <a href={`mailto:${company.email}`}>{company.email}</a>
+          <a href={`mailto:${additionalContactEmail}`}>{additionalContactEmail}</a>
+        </div>
+      </li>
+      <li>
+        <span class="sp-icon"><SvcIcon name="building" size={22} /></span>
+        <div>
+          <span class="ct-label">Address</span>
+          <address>{contactAddress.lines.map((l, i) => <>{l}{i < contactAddress.lines.length - 1 && <br />}</>)}</address>
+          <a class="ct-map" href={mapHref} target="_blank" rel="noopener noreferrer">View on a map<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+      </li>
+      <li>
+        <span class="sp-icon"><SvcIcon name="globe" size={22} /></span>
+        <div><span class="ct-label">Website</span><a href={company.url}>{websiteLabel}</a></div>
+      </li>
+    </ul>
+  </ServiceHero>
+
+  <section class="section section--mist" aria-labelledby="form-title">
+    <div class="container ct-grid">
+      <div class="ct-side">
+        <h2 id="form-title">Send us a message</h2>
+        <p>Tell us about your requirement. The more you share, the better we can prepare for the conversation.</p>
+        <ul class="ct-tips">
+          <li><SvcIcon name="check" size={18} />What you want to achieve or fix</li>
+          <li><SvcIcon name="check" size={18} />The service you are interested in, if you know it</li>
+          <li><SvcIcon name="check" size={18} />Anything that affects timing or location</li>
+        </ul>
+        <div class="ct-privacy" id="privacy" tabindex="-1">
+          <h3>Privacy notice</h3>
+          <p>We use the details you send through this form to respond to your enquiry and to discuss the services you ask about. We ask only for the information needed for that purpose.</p>
+          <p>Please do not include passwords, payment details, or other sensitive information in your message. This is a short statement of how we intend to use your details. A full privacy policy has not been published on this site yet.</p>
+        </div>
+      </div>
+      <div class="sp-form-wrap ct-form-wrap">
+        <EnquiryForm
+          id="contact-form"
+          fields={fields}
+          subject="Website contact form enquiry"
+          submitLabel="Send message"
+          web3FormsKey={import.meta.env.PUBLIC_FORM_ACCESS_KEY ?? ''}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="browse-title">
+    <div class="container">
+      <SectionHeading id="browse-title" title="Not sure which service you need?" intro="Browse what we offer, or choose “General enquiry” in the form and we will point you in the right direction." />
+      <nav class="ct-browse" aria-label="Services">
+        <a href="/services/">All services</a>
+        {services.map((s) => <a href={s.href}>{s.short}</a>)}
+        <a href={training.href}>{training.title}</a>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>

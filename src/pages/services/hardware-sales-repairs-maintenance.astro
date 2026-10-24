@@ -1,0 +1,131 @@
+---
+import '../../styles/service-page.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceHero from '../../components/service/ServiceHero.astro';
+import OfferingGrid from '../../components/service/OfferingGrid.astro';
+import ProcessSteps from '../../components/service/ProcessSteps.astro';
+import Faq from '../../components/service/Faq.astro';
+import EnquirySection from '../../components/service/EnquirySection.astro';
+import Diagram from '../../components/service/visuals/Diagram.astro';
+import type { Field } from '../../components/service/types';
+
+// No inventory, manufacturer authorization, prices, warranties, turnaround times, or delivery coverage are stated.
+// There is no cart or checkout: every route to purchase starts with an enquiry.
+const products = [
+  { art: 'p-server', title: 'Servers', text: 'Servers for offices and organizations, specified to your requirements.' },
+  { art: 'p-desktop', title: 'Desktop computers', text: 'Desktop systems for workplaces, classrooms, and home use.' },
+  { art: 'p-laptop', title: 'Laptops', text: 'Laptops for staff, students, and individuals.' },
+  { art: 'p-monitor', title: 'Monitors and peripherals', text: 'Displays and the equipment that goes with them.' },
+  { art: 'p-peripherals', title: 'Keyboards, mice, and input devices', text: 'Everyday input devices and workstation equipment.' },
+  { art: 'p-accessories', title: 'Computer accessories and related equipment', text: 'Cables, adapters, storage, and other supporting equipment.' },
+];
+const repairs = [
+  { icon: 'laptop', title: 'Desktop and laptop troubleshooting', text: 'Working out why a computer is slow, unstable, or not starting.' },
+  { icon: 'search', title: 'Hardware fault diagnosis', text: 'Finding the component or cause behind a hardware fault.' },
+  { icon: 'wrench', title: 'Component replacement', text: 'Replacing faulty parts where suitable parts are available.', note: 'Where available.' },
+  { icon: 'chart', title: 'Performance and upgrade assessments', text: 'Checking whether an upgrade could make existing equipment more useful.' },
+  { icon: 'terminal', title: 'Operating system and driver support', text: 'Help with operating systems and drivers.', note: 'Where offered.' },
+];
+const maintenance = [
+  { icon: 'clock', title: 'Preventive hardware maintenance', text: 'Scheduled checks and cleaning to help equipment keep working.' },
+  { icon: 'upload', title: 'New equipment installation', text: 'Installing new machines and peripherals so they are ready to use.' },
+  { icon: 'sliders', title: 'Device setup and configuration', text: 'Setting up devices for the people and software that will use them.' },
+  { icon: 'building', title: 'Business equipment deployment', text: 'Rolling out equipment across a team, office, or organization.' },
+  { icon: 'clipboard', title: 'IT equipment inventory and maintenance support', text: 'Support with keeping track of equipment and maintaining it.' },
+];
+const steps = [
+  { title: 'Describe the equipment or requirement', text: 'Tell us what you need, or what is wrong with your device.' },
+  { title: 'Receive an assessment or quotation', text: 'We review your request and come back with an assessment or quote.' },
+  { title: 'Approve the proposed work', text: 'Nothing proceeds until you have approved what we propose.' },
+  { title: 'Arrange delivery, repair, or installation', text: 'We agree the practical arrangements with you.' },
+];
+const faqs = [
+  { q: 'Which equipment do you support?', a: 'We work with servers, desktop computers, laptops, monitors, peripherals, and related equipment. If you are unsure whether we can help with a particular device, describe it in the enquiry form.' },
+  { q: 'Can I request a quote before purchasing?', a: 'Yes. Describe the equipment you need and we will respond with a quotation. You decide whether to go ahead.' },
+  { q: 'How are repairs assessed?', a: 'We begin with your description of the fault and diagnose the problem, then explain what we found and what we propose. You approve the work before it proceeds.' },
+  { q: 'Can organizations request multiple devices?', a: 'Yes. Include the number and type of devices in your enquiry and we will prepare a quotation for the full requirement, including installation and setup if you need it.' },
+  { q: 'Is on-site support available?', a: 'It depends on the work and where the equipment is located. Tell us where you are and what you need, and we will confirm what is possible.' },
+];
+const fields: Field[] = [
+  { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+  { name: 'email', label: 'Email address', type: 'email', required: true, autocomplete: 'email' },
+  { name: 'phone', label: 'Phone number', type: 'tel', autocomplete: 'tel' },
+  { name: 'organization', label: 'Organization (if any)', autocomplete: 'organization' },
+  { name: 'request', label: 'What do you need?', type: 'select', required: true, options: ['Buy or procure equipment', 'Repair or diagnose a fault', 'Upgrade existing equipment', 'Installation or setup', 'Preventive maintenance', 'Not sure yet'] },
+  { name: 'equipment', label: 'Equipment', placeholder: 'For example: 10 laptops, or one desktop that will not start' },
+  { name: 'message', label: 'Describe your requirement or the fault', type: 'textarea', required: true, hint: 'Include quantities, the problem you are seeing, and where the equipment is located.' },
+];
+---
+<BaseLayout
+  title="Hardware Sales and Repairs | Zeus System Technologies"
+  description="Computers, servers, peripherals, repairs, installation, and maintenance from Zeus System Technologies. Request hardware or repair support."
+>
+  <ServiceHero
+    title="The Right Equipment. Expert Technical Support."
+    lead="For individuals, offices, SMEs, and organizations that need to acquire, repair, upgrade, or maintain IT equipment, with practical advice from the first enquiry."
+    primary={{ label: 'Request Hardware or Repair Support', href: '#enquire' }}
+    secondary={{ label: 'View Our Services', href: '/services/' }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: 'Hardware Sales and Repairs' }]}
+    schemaName="Hardware Sales, Repairs and Maintenance"
+    schemaDescription="Supply, repair, installation, and maintenance of servers, computers, and related equipment."
+  >
+    <figure class="sp-figure">
+      <div class="sp-frame"><Diagram name="bench" /></div>
+      <figcaption>Illustration of equipment we supply and support.</figcaption>
+    </figure>
+  </ServiceHero>
+
+  <section class="section" aria-labelledby="sales-title">
+    <div class="container">
+      <SectionHeading id="sales-title" title="Hardware sales and procurement" intro="Tell us what you need and we will advise and quote. Stock and prices are confirmed in your quotation, not listed online." />
+      <div class="sp-products">
+        {products.map((p) => (
+          <article class="sp-product">
+            <div class="sp-art-wrap"><Diagram name={p.art} light /></div>
+            <div><h3>{p.title}</h3><p>{p.text}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="repair-title">
+    <div class="container">
+      <SectionHeading id="repair-title" title="Repairs and diagnostics" intro="Find out what is wrong, and what your options are, before committing to any work." />
+      <OfferingGrid items={repairs} cols={2} variant="rows" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="maint-title">
+    <div class="container">
+      <SectionHeading id="maint-title" title="Maintenance and deployment" intro="Equipment that is installed, configured, and looked after properly." />
+      <OfferingGrid items={maintenance} cols={2} variant="rows" />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="how-title">
+    <div class="container">
+      <SectionHeading id="how-title" title="How it works" intro="Four steps, and you stay in control throughout." />
+      <ProcessSteps steps={steps} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-title">
+    <div class="container">
+      <SectionHeading id="faq-title" title="Frequently asked questions" />
+      <Faq items={faqs} />
+    </div>
+  </section>
+
+  <EnquirySection
+    title="Request Hardware or Repair Support"
+    text="Tell us what you need or what is wrong. We will respond with an assessment or quotation for you to approve."
+    formId="hardware-enquiry"
+    subject="Hardware sales and repairs enquiry"
+    submitLabel="Send request"
+    fields={fields}
+    useServiceWeb3Forms
+    tips={['Type and quantity of equipment', 'Make and model, if you know them', 'A description of any fault', 'Where the equipment is located']}
+  />
+</BaseLayout>

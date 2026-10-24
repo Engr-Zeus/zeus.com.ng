@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - test -f dist/index.html
+    - export DEPLOYPATH="$HOME/public_html"
+    - /bin/mkdir -p "$DEPLOYPATH"
+    - /bin/cp -R dist/. "$DEPLOYPATH"/

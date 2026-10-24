@@ -1,0 +1,307 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/Button.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import ServiceArt from '../../components/ServiceArt.astro';
+import { company, quoteHref } from '../../data/site';
+import { categories, offeringCount } from '../../data/services-catalog';
+import '../../styles/services.css';
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+const listJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Technology Services',
+  url: new URL('/services/', Astro.site).href,
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: categories.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.title,
+      url: new URL(c.href, Astro.site).href,
+    })),
+  },
+};
+---
+<BaseLayout
+  title="Technology Services | Zeus System Technologies"
+  description="Explore Zeus System Technologies services: managed IT, web and software development, infrastructure and cloud, hardware, CCTV and home automation, and training."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(listJsonLd)} />
+
+  <!-- Hero -->
+  <section class="sv-hero on-dark" aria-labelledby="sv-title">
+    <div class="container sv-hero-grid">
+      <div>
+        <p class="sv-readout">
+          <span><b>{pad(categories.length)}</b> service categories</span>
+          <span><b>{offeringCount}</b> offerings</span>
+        </p>
+        <h1 id="sv-title">Technology Services for Every Stage of Your Journey.</h1>
+        <p class="sv-lead">
+          From everyday IT support to custom-built digital solutions, Zeus System Technologies brings the services,
+          expertise, and technical support you need together in one place.
+        </p>
+        <div class="hero-actions">
+          <Button href={quoteHref}>Request a Quote</Button>
+          <Button href="#catalog" variant="outline">Browse services</Button>
+        </div>
+      </div>
+
+      <nav class="sv-rack-wrap" aria-label="Jump to a service category">
+        <ol class="sv-rack">
+          {categories.map((c, i) => (
+            <li class="sv-unit" style={`--i:${i}`}>
+              <a href={`#cat-${c.id}`}>
+                <span class="sv-unit-code" aria-hidden="true">{c.code}</span>
+                <span class="sv-unit-name">{c.title}</span>
+                <span class="sv-leds" aria-hidden="true"><i></i><i></i><i></i></span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Search and filters (revealed by script; the catalog below works without it) -->
+  <section class="sv-tools" data-tools hidden aria-label="Find a service">
+    <div class="container sv-tools-inner">
+      <div class="sv-search">
+        <label class="visually-hidden" for="sv-q">Search services</label>
+        <span class="sv-prompt" aria-hidden="true">&gt;</span>
+        <input id="sv-q" type="search" placeholder="Search: CCTV, backup, website" autocomplete="off" />
+        <button type="button" class="sv-reset" data-reset hidden>Reset</button>
+      </div>
+      <div class="sv-chips" role="group" aria-label="Filter by category">
+        <button type="button" class="sv-chip" aria-pressed="true" data-filter="all">All</button>
+        {categories.map((c) => (
+          <button type="button" class="sv-chip" aria-pressed="false" data-filter={c.id}>
+            <span class="sv-chip-code" aria-hidden="true">{c.code}</span>{c.chip}
+          </button>
+        ))}
+      </div>
+      <p class="sv-status" role="status" data-status></p>
+    </div>
+  </section>
+
+  <!-- Catalog -->
+  <div class="sv-catalog" id="catalog">
+    <div class="container">
+      <p class="sv-hint" data-enhance hidden>
+        Tick the services you are interested in and we will carry them into your quote request.
+      </p>
+
+      {categories.map((c, i) => (
+        <section
+          class:list={['sv-cat', i % 2 === 1 && 'sv-cat--flip']}
+          id={`cat-${c.id}`}
+          data-cat={c.id}
+          data-search={`${c.title} ${c.description}`}
+          aria-labelledby={`cat-${c.id}-title`}
+        >
+          <div class="sv-cat-grid">
+            <div class="sv-panel on-dark">
+              <div class="sv-art-wrap"><ServiceArt name={c.art} /></div>
+              <div class="sv-panel-head">
+                <span class="sv-code" aria-hidden="true">{c.code}</span>
+                <span class="sv-module" aria-hidden="true">module / {c.id}</span>
+              </div>
+              <h2 id={`cat-${c.id}-title`}>{c.title}</h2>
+              <p>{c.description}</p>
+              <Button href={c.href}>View {c.title}</Button>
+            </div>
+
+            <fieldset class="sv-offers">
+              <legend class="visually-hidden">Select {c.title} services for your quote request</legend>
+              <ul>
+                {c.offerings.map((o, j) => (
+                  <li class="sv-offer" data-offer>
+                    <label>
+                      <input type="checkbox" class="sv-check" value={`${c.title}: ${o}`} />
+                      <span class="sv-box" aria-hidden="true"></span>
+                      <span class="sv-idx" aria-hidden="true">{pad(j + 1)}</span>
+                      <span class="sv-offer-text">{o}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </fieldset>
+          </div>
+        </section>
+      ))}
+
+      <div class="sv-empty" data-empty hidden>
+        <h2>No matching services</h2>
+        <p>Nothing in the directory matches that search. Try a shorter word, or tell us what you need and we will point you in the right direction.</p>
+        <div class="hero-actions">
+          <Button href={quoteHref}>Request a Quote</Button>
+          <Button href="/contact/" variant="outline">Contact Us</Button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not sure -->
+  <section class="section sv-unsure" aria-labelledby="unsure-title">
+    <div class="container sv-unsure-grid">
+      <div>
+        <h2 id="unsure-title">Not sure what you need?</h2>
+        <p class="sv-unsure-lead">
+          Describe your situation in your own words. You do not need technical terms. We will help you work out which
+          services fit.
+        </p>
+        <h3 class="sv-start-title">Common starting points</h3>
+        <ul class="sv-start">
+          {categories.map((c) => (
+            <li>
+              <a href={c.href}>
+                <span class="sv-start-code" aria-hidden="true">{c.code}</span>
+                <span>{c.need}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="sv-term on-dark">
+        <div class="sv-term-bar" aria-hidden="true"><i></i><i></i><i></i><span>describe_requirement</span></div>
+        <form class="sv-term-body" action={quoteHref} method="get">
+          <label for="sv-need"><span aria-hidden="true">&gt;</span> What do you need help with?</label>
+          <textarea
+            id="sv-need"
+            name="message"
+            rows="6"
+            placeholder="For example: we are opening a new office and need a network, CCTV, and a website."
+          ></textarea>
+          <p class="sv-term-note">
+            This takes you to the quote request with your description attached. Nothing is sent until you submit that form.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn--primary" type="submit">Continue to Request a Quote</button>
+            <a class="btn btn--outline" href={`mailto:${company.email}`} data-mail data-email={company.email}>Email us instead</a>
+          </div>
+        </form>
+        <p class="sv-term-foot">
+          Prefer to talk? Call <a href={company.phoneHref}>{company.phone}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Get a Quote for the Services You Need." text="Tell us what you need and we will recommend a practical way forward." />
+
+  <!-- Selection tray (revealed by script when services are ticked) -->
+  <div class="sv-tray on-dark" data-tray hidden>
+    <div class="container sv-tray-inner">
+      <p class="sv-tray-count" role="status"><b data-count>0</b> selected</p>
+      <button type="button" class="btn btn--outline btn--sm" data-clear>Clear</button>
+      <a class="btn btn--primary btn--sm" href={quoteHref} data-quote data-base={quoteHref}>Request a quote for these</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const searchEl = document.querySelector<HTMLInputElement>('#sv-q');
+  const tools = document.querySelector<HTMLElement>('[data-tools]');
+  const resetBtn = document.querySelector<HTMLButtonElement>('[data-reset]');
+  const statusEl = document.querySelector<HTMLElement>('[data-status]');
+  const emptyEl = document.querySelector<HTMLElement>('[data-empty]');
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.sv-chip'));
+  const cats = Array.from(document.querySelectorAll<HTMLElement>('section.sv-cat'));
+  const checks = Array.from(document.querySelectorAll<HTMLInputElement>('.sv-check'));
+  const tray = document.querySelector<HTMLElement>('[data-tray]');
+  const countEl = document.querySelector<HTMLElement>('[data-count]');
+  const quoteLink = document.querySelector<HTMLAnchorElement>('[data-quote]');
+  let filter = 'all';
+
+  // Reveal enhancements that need JavaScript.
+  if (tools) tools.hidden = false;
+  document.querySelectorAll<HTMLElement>('[data-enhance]').forEach((el) => (el.hidden = false));
+
+  function apply() {
+    const terms = (searchEl?.value ?? '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const cat of cats) {
+      const meta = (cat.dataset.search ?? '').toLowerCase();
+      const metaMatch = terms.length > 0 && terms.every((t) => meta.includes(t));
+      let any = false;
+      cat.querySelectorAll<HTMLElement>('[data-offer]').forEach((li) => {
+        const text = (li.textContent ?? '').toLowerCase();
+        const match = terms.length === 0 || metaMatch || terms.every((t) => text.includes(t));
+        li.hidden = !match;
+        if (match) any = true;
+      });
+      const visible = (filter === 'all' || filter === cat.dataset.cat) && any;
+      cat.hidden = !visible;
+      if (visible) shown++;
+    }
+    if (emptyEl) emptyEl.hidden = shown > 0;
+    if (resetBtn) resetBtn.hidden = filter === 'all' && terms.length === 0;
+    if (statusEl) {
+      statusEl.textContent =
+        shown === 0 ? 'No matching services.' : `Showing ${shown} of ${cats.length} categories.`;
+    }
+  }
+
+  function setFilter(id: string) {
+    filter = id;
+    chips.forEach((chip) => chip.setAttribute('aria-pressed', String(chip.dataset.filter === id)));
+    apply();
+  }
+
+  function reset() {
+    if (searchEl) searchEl.value = '';
+    setFilter('all');
+  }
+
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      const id = chip.dataset.filter ?? 'all';
+      setFilter(id !== 'all' && filter === id ? 'all' : id);
+    })
+  );
+  searchEl?.addEventListener('input', apply);
+  searchEl?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && searchEl.value) {
+      searchEl.value = '';
+      apply();
+    }
+  });
+  resetBtn?.addEventListener('click', () => {
+    reset();
+    searchEl?.focus();
+  });
+  // Make sure a category is visible before jumping to it from the hero rack.
+  document.querySelectorAll<HTMLAnchorElement>('.sv-rack a').forEach((a) => a.addEventListener('click', reset));
+
+  // Quote builder: carry ticked services into the quote request URL.
+  function updateTray() {
+    const selected = checks.filter((c) => c.checked);
+    if (countEl) countEl.textContent = String(selected.length);
+    if (tray) tray.hidden = selected.length === 0;
+    document.body.classList.toggle('has-tray', selected.length > 0);
+    if (quoteLink) {
+      const params = new URLSearchParams();
+      selected.forEach((c) => params.append('interest', c.value));
+      const base = quoteLink.dataset.base ?? '/request-quote/';
+      quoteLink.href = selected.length ? `${base}?${params.toString()}` : base;
+    }
+  }
+  checks.forEach((c) => c.addEventListener('change', updateTray));
+  document.querySelector('[data-clear]')?.addEventListener('click', () => {
+    checks.forEach((c) => (c.checked = false));
+    updateTray();
+  });
+
+  // "Email us instead" carries the description into the email body.
+  const need = document.querySelector<HTMLTextAreaElement>('#sv-need');
+  const mail = document.querySelector<HTMLAnchorElement>('[data-mail]');
+  need?.addEventListener('input', () => {
+    if (!mail) return;
+    const subject = encodeURIComponent('Service enquiry');
+    mail.href = `mailto:${mail.dataset.email}?subject=${subject}&body=${encodeURIComponent(need.value)}`;
+  });
+</script>

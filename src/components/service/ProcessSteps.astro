@@ -1,0 +1,14 @@
+---
+interface Step { title: string; text: string }
+interface Props { steps: Step[] }
+const { steps } = Astro.props;
+---
+<ol class="sp-steps" style={`--n:${steps.length}`}>
+  {steps.map((s, i) => (
+    <li class="sp-step">
+      <span class="sp-step-num" aria-hidden="true">{i + 1}</span>
+      <h3>{s.title}</h3>
+      <p>{s.text}</p>
+    </li>
+  ))}
+</ol>

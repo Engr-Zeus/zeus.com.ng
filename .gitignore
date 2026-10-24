@@ -1,0 +1,4 @@
+node_modules
+.astro
+.env
+# dist is intentionally tracked for cPanel static-site deployment.

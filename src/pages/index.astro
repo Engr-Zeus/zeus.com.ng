@@ -1,0 +1,273 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import HeroNetwork from '../components/HeroNetwork.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company, services, training, quoteHref } from '../data/site';
+import { projects } from '../data/projects';
+
+const commitments = [
+  {
+    title: 'Solutions tailored to your needs',
+    text: 'We start with what you need to achieve and recommend technology to match, rather than fitting you into a fixed package.',
+  },
+  {
+    title: 'Support across technology disciplines',
+    text: 'Infrastructure, software, web, hardware, and security are handled by one company, so you can work with a single partner instead of coordinating several suppliers.',
+  },
+  {
+    title: 'Practical implementation and maintenance',
+    text: 'We set systems up properly and remain available after installation for maintenance and technical support.',
+  },
+  {
+    title: 'Reliability, security, and efficiency',
+    text: 'Our recommendations aim for systems that stay dependable, protect your data and premises, and reduce wasted effort.',
+  },
+  {
+    title: 'Support for individuals and organizations',
+    text: 'Whether you are a household, a small business, or a government institution, we give your requirements the same careful attention.',
+  },
+];
+
+const audiences = [
+  { title: 'Small and medium-sized businesses', icon: 'briefcase', text: 'Dependable IT, websites, and software that fit the size and budget of a growing business.' },
+  { title: 'Corporate organizations', icon: 'building', text: 'Infrastructure, networking, and managed support for larger environments with many users.' },
+  { title: 'Government and public-sector institutions', icon: 'landmark', text: 'Technology supply, systems, and support for public institutions.' },
+  { title: 'Educational and training organizations', icon: 'book', text: 'Equipment, systems, and technology training for schools and training providers.' },
+  { title: 'Individuals and households', icon: 'home', text: 'Computer repairs, equipment, home automation, and CCTV for your home.' },
+];
+
+const steps = [
+  { title: 'Understand your needs', text: 'We listen first, learning how you work and what you need technology to do.' },
+  { title: 'Recommend the right solution', text: 'We propose practical options that fit your requirements and budget.' },
+  { title: 'Implement and configure', text: 'We supply, install, build, and configure the solution so it is ready to use.' },
+  { title: 'Support, maintain, and improve', text: 'We keep systems running and help you improve them as your needs change.' },
+];
+
+const featured = projects.slice(0, 3);
+---
+<BaseLayout
+  title="Zeus System Technologies | Technology Solutions, Abuja"
+  description="Zeus System Technologies, based in Abuja, provides managed IT, web and software development, infrastructure, hardware, CCTV and home automation, and training."
+>
+  <!-- 1. Hero -->
+  <section class="hero on-dark" aria-labelledby="hero-title">
+    <div class="container hero-grid">
+      <div>
+        <h1 id="hero-title">Simplicity through Technology</h1>
+        <p class="hero-lead">
+          Practical technology solutions for businesses, organizations, and homes — from managed IT and custom software
+          to web development, infrastructure, and smart security.
+        </p>
+        <div class="hero-actions">
+          <Button href="/services/">Explore Our Services</Button>
+          <Button href={quoteHref} variant="outline">Request a Quote</Button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <HeroNetwork />
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Introduction -->
+  <section class="section" aria-labelledby="intro-title">
+    <div class="container intro-grid">
+      <div class="intro-copy">
+        <h2 id="intro-title">One technology partner, from first requirement to ongoing support</h2>
+        <p style="margin-top: 1.5rem">
+          {company.brandName} helps individuals, businesses, and institutions select, implement, maintain, and improve
+          their technology systems. That covers the full range, from IT support and networks to software, websites,
+          hardware, and security systems.
+        </p>
+        <p>
+          We also supply hardware and software, so the equipment and applications you need can come from the same team
+          that sets them up and supports them.
+        </p>
+      </div>
+      <section class="why-choose" aria-labelledby="why-choose-title">
+        <p class="why-choose-eyebrow">Why Choose Us</p>
+        <h2 id="why-choose-title">Technology That Works for You.</h2>
+        <p class="why-choose-intro">
+          We combine technical expertise, practical solutions, and dependable support to help individuals and
+          organizations work smarter, operate efficiently, and grow with confidence.
+        </p>
+        <ul class="value-grid">
+          <li class="value-card">
+            <span class="value-icon"><Icon name="monitor-settings" size={25} /></span>
+            <div>
+              <h3>End-to-End IT Solutions</h3>
+              <p>From IT infrastructure and managed services to software and web development.</p>
+            </div>
+          </li>
+          <li class="value-card">
+            <span class="value-icon"><Icon name="handshake" size={25} /></span>
+            <div>
+              <h3>Client-Focused Service</h3>
+              <p>Solutions tailored to your needs, objectives, and budget.</p>
+            </div>
+          </li>
+          <li class="value-card">
+            <span class="value-icon"><Icon name="shield" size={25} /></span>
+            <div>
+              <h3>Security &amp; Reliability</h3>
+              <p>Technology solutions built with security, stability, and continuity in mind.</p>
+            </div>
+          </li>
+          <li class="value-card">
+            <span class="value-icon"><Icon name="trending-up" size={25} /></span>
+            <div>
+              <h3>Built for Growth</h3>
+              <p>Scalable solutions that adapt as your business and technology needs evolve.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </section>
+
+  <!-- 3. Services -->
+  <section class="section section--mist" id="services" aria-labelledby="services-title">
+    <div class="container">
+      <SectionHeading
+        id="services-title"
+        title="What we do"
+        intro="Six core service areas, plus training, covering the technology your organization or home relies on."
+      />
+      <div class="service-list">
+        {services.map((s) => (
+          <a class="service-row" href={s.href}>
+            <span class="service-icon"><Icon name={s.icon} size={26} /></span>
+            <div>
+              <h3>{s.title}</h3>
+              <p>{s.description}</p>
+            </div>
+            <Icon name="chevron-right" size={20} class="go" />
+          </a>
+        ))}
+      </div>
+      <div class="feature-band on-dark">
+        <div class="feature-band-main">
+          <span class="service-icon"><Icon name="cap" size={26} /></span>
+          <div>
+            <h3>{training.title}</h3>
+            <p>{training.description}</p>
+          </div>
+        </div>
+        <Button href={training.href} variant="outline">Explore training</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Why choose Zeus -->
+  <section class="section section--dark on-dark" aria-labelledby="why-title">
+    <div class="container why-grid">
+      <SectionHeading
+        id="why-title"
+        title="Why choose Zeus"
+        intro="These are the commitments we work to, whatever the size of the project."
+      />
+      <ul class="why-list">
+        {commitments.map((c) => (
+          <li class="why-item">
+            <h3>{c.title}</h3>
+            <p>{c.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. Who we serve -->
+  <section class="section" aria-labelledby="serve-title">
+    <div class="container">
+      <SectionHeading
+        id="serve-title"
+        title="Who we serve"
+        intro="Technology needs differ between a household, a growing business, and a public institution. We work with all of them."
+      />
+      <ul class="audience-grid">
+        {audiences.map((a) => (
+          <li class="audience">
+            <Icon name={a.icon} size={32} />
+            <h3>{a.title}</h3>
+            <p>{a.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6. How we work -->
+  <section class="section section--mist" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeading
+        id="process-title"
+        title="How we work"
+        intro="A straightforward process, from the first conversation to long-term support."
+      />
+      <ol class="process">
+        {steps.map((s, i) => (
+          <li class="step">
+            <span class="step-num" aria-hidden="true">{i + 1}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 7. Featured work -->
+  <section class="section" aria-labelledby="work-title">
+    <div class="container">
+      <SectionHeading
+        id="work-title"
+        title="Featured work"
+        intro={featured.length
+          ? 'Selected projects delivered by our team.'
+          : 'Case studies from our completed projects are being prepared for this section.'}
+      />
+      {featured.length > 0 ? (
+        <div class="project-grid">
+          {featured.map((p) => (
+            <a class="project-card" href={p.href}>
+              {p.image && <img src={p.image} alt={p.imageAlt ?? p.title} width="800" height="500" loading="lazy" />}
+              <div class="body">
+                <p class="cat">{p.category}</p>
+                <h3>{p.title}</h3>
+                <p>{p.summary}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="demo-area">
+          <span class="demo-tag">Demonstration area</span>
+          <h3>Project case studies will appear here</h3>
+          <p>
+            This area is reserved for real projects delivered by Zeus System Technologies. Nothing shown here is client
+            work. If you would like to discuss a project of your own, we are glad to talk.
+          </p>
+          <div class="demo-slots" aria-hidden="true">
+            <div class="demo-slot">Project slot</div>
+            <div class="demo-slot">Project slot</div>
+            <div class="demo-slot">Project slot</div>
+          </div>
+          <div class="demo-actions">
+            <Button href="/projects/" variant="outline">View projects page</Button>
+            <Button href="/contact/">Discuss a project</Button>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- 8. Final CTA -->
+  <CtaBand
+    title="Let’s Find the Right Technology Solution for You."
+    text="Tell us what you need and we will recommend a practical way forward."
+  />
+</BaseLayout>

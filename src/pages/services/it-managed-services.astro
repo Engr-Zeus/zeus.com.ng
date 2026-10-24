@@ -1,0 +1,143 @@
+---
+import '../../styles/service-page.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceHero from '../../components/service/ServiceHero.astro';
+import OfferingGrid from '../../components/service/OfferingGrid.astro';
+import ProcessSteps from '../../components/service/ProcessSteps.astro';
+import Faq from '../../components/service/Faq.astro';
+import EnquirySection from '../../components/service/EnquirySection.astro';
+import Diagram from '../../components/service/visuals/Diagram.astro';
+import type { Field } from '../../components/service/types';
+
+// Content is descriptive only: no 24/7 support, response times, uptime figures, or certifications are claimed.
+const benefits = [
+  { icon: 'server', title: 'Maintain your IT environment', text: 'Keep computers, servers, and networks looked after on an agreed basis.' },
+  { icon: 'headset', title: 'Troubleshoot technical problems', text: 'Get help diagnosing and resolving faults that interrupt your work.' },
+  { icon: 'network', title: 'Manage infrastructure', text: 'Have the systems your team relies on administered and kept in order.' },
+  { icon: 'bulb', title: 'Plan improvements', text: 'Receive advice on upgrades and technology decisions before you commit.' },
+];
+const offerings = [
+  { icon: 'headset', title: 'IT helpdesk and troubleshooting', text: 'A point of contact for technical problems, with diagnosis and resolution of issues affecting your users.' },
+  { icon: 'laptop', title: 'Desktop and laptop support', text: 'Support for staff computers, including faults, setup, and day-to-day usage problems.' },
+  { icon: 'server', title: 'Server administration and maintenance', text: 'Routine administration and upkeep of the servers your organization depends on.' },
+  { icon: 'key', title: 'User account and access administration', text: 'Creating, changing, and removing user accounts and the access that goes with them.' },
+  { icon: 'network', title: 'Network monitoring and troubleshooting', text: 'Checking network health and tracking down connectivity problems.' },
+  { icon: 'sliders', title: 'Software installation and configuration', text: 'Installing and configuring the software your team needs to work.' },
+  { icon: 'wrench', title: 'Preventive maintenance', text: 'Scheduled checks and upkeep aimed at catching problems before they interrupt work.' },
+  { icon: 'refresh', title: 'Backup and recovery planning', text: 'Helping you decide what to back up, how, and how to restore it when needed.' },
+  { icon: 'clipboard', title: 'IT asset and infrastructure support', text: 'Support in keeping track of equipment and the infrastructure it runs on.' },
+  { icon: 'bulb', title: 'Technology advisory and IT planning', text: 'Practical advice on technology choices, upgrades, and longer-term IT planning.' },
+];
+const audiences = [
+  { icon: 'briefcase', title: 'Small and medium-sized businesses', text: 'Teams that need dependable IT support without building a full in-house department.' },
+  { icon: 'building', title: 'Offices', text: 'Offices with shared computers, networks, printers, and servers to keep running.' },
+  { icon: 'landmark', title: 'Institutions', text: 'Schools, public bodies, and other institutions with many users and systems.' },
+  { icon: 'users', title: 'Organizations with internal or outsourced IT', text: 'Organizations that want extra capacity alongside an in-house team, or a partner to carry the IT workload.' },
+];
+const options = [
+  { icon: 'phone', title: 'Ad hoc support', text: 'Help when a specific problem or request comes up.', note: 'Best for occasional needs.' },
+  { icon: 'clock', title: 'Scheduled maintenance', text: 'Planned visits or checks on a regular basis.', note: 'Best for steady upkeep.' },
+  { icon: 'clipboard', title: 'Project-based support', text: 'A defined piece of work with an agreed scope, such as a migration or setup.', note: 'Best for one-off improvements.' },
+  { icon: 'shield', title: 'Ongoing managed services', text: 'Continuing responsibility for the day-to-day care of your IT environment.', note: 'Best for long-term partnership.' },
+];
+const steps = [
+  { title: 'Assessment', text: 'We learn about your environment, users, and what is and is not working.' },
+  { title: 'Proposal', text: 'We recommend a support approach and scope that fits your needs.' },
+  { title: 'Onboarding', text: 'We get to know your systems and agree how to work together.' },
+  { title: 'Service delivery', text: 'We provide the agreed support, maintenance, and administration.' },
+  { title: 'Review', text: 'We review how things are going and adjust as your needs change.' },
+];
+const faqs = [
+  { q: 'What are managed IT services?', a: 'Managed IT services place the day-to-day care of your technology with a dedicated partner. That can include helpdesk support, maintenance, server and network administration, and advice on planning improvements.' },
+  { q: 'Do you offer 24/7 support?', a: 'Support hours and how quickly we respond depend on the engagement agreed with you. We will confirm exactly what is available when we discuss your requirements.' },
+  { q: 'Can you work alongside our internal IT team?', a: 'Yes, where it suits your organization. Some clients want extra capacity or specific skills next to an in-house team; others want us to carry the full IT workload.' },
+  { q: 'Can I get help with a one-off problem?', a: 'Ad hoc support is one of our engagement options, subject to availability. Describe the problem in the enquiry form and we will advise on next steps.' },
+  { q: 'How are engagements priced?', a: 'We do not publish fixed prices. The scope of support, the size of your environment, and the type of engagement all affect the quote, which we prepare after assessing your needs.' },
+  { q: 'How do I get started?', a: 'Send an enquiry describing your environment and what you need help with. We will respond to discuss your requirements and recommend an approach.' },
+];
+const fields: Field[] = [
+  { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+  { name: 'email', label: 'Email address', type: 'email', required: true, autocomplete: 'email' },
+  { name: 'phone', label: 'Phone number', type: 'tel', autocomplete: 'tel' },
+  { name: 'organization', label: 'Organization', autocomplete: 'organization' },
+  { name: 'engagement', label: 'Type of support', type: 'select', wide: true, options: ['Ad hoc support', 'Scheduled maintenance', 'Project-based support', 'Ongoing managed services', 'Not sure yet'] },
+  { name: 'message', label: 'Tell us about your IT environment and needs', type: 'textarea', required: true, hint: 'For example: number of users, main systems, and the problems you want solved.' },
+];
+---
+<BaseLayout
+  title="IT Managed Services | Zeus System Technologies"
+  description="IT managed services from Zeus System Technologies: helpdesk and troubleshooting, server and network support, backup planning, and IT advisory for organizations."
+>
+  <ServiceHero
+    title="Reliable IT Support. Better Business Continuity."
+    lead="Managed IT services help organizations maintain their IT environments, troubleshoot technical problems, manage infrastructure, and plan technology improvements. Zeus System Technologies is a partner for stable, secure, and efficient IT operations."
+    primary={{ label: 'Request a Consultation', href: '#enquire' }}
+    secondary={{ label: 'Explore Services', href: '/services/' }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: 'IT Managed Services' }]}
+    schemaName="IT Managed Services"
+    schemaDescription="Helpdesk and troubleshooting, server and network support, backup planning, and IT advisory."
+  >
+    <figure class="sp-figure">
+      <div class="sp-frame"><Diagram name="managed-map" /></div>
+      <figcaption>Illustration: managed support looks after the whole environment, from users to backups.</figcaption>
+    </figure>
+  </ServiceHero>
+
+  <section class="section" aria-labelledby="overview-title">
+    <div class="container sp-split">
+      <div class="sp-prose">
+        <h2 id="overview-title">What managed IT services mean</h2>
+        <p>Every organization depends on technology, and that technology needs ongoing care. Managed IT services give you a partner responsible for keeping your systems in working order, helping your people when something goes wrong, and advising you on what to improve next.</p>
+        <p>Depending on your needs, that can be a one-off fix, scheduled maintenance, a defined project, or a continuing arrangement. You choose how much of the IT workload to hand over.</p>
+      </div>
+      <OfferingGrid items={benefits} cols={1} variant="rows" />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="offer-title">
+    <div class="container">
+      <SectionHeading id="offer-title" title="Service offerings" intro="Ten areas of support that can be combined to match the way your organization works." />
+      <OfferingGrid items={offerings} cols={2} variant="rows" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="who-title">
+    <div class="container">
+      <SectionHeading id="who-title" title="Who benefits" intro="Managed IT support suits many kinds of organization." />
+      <OfferingGrid items={audiences} cols={4} variant="cards" />
+    </div>
+  </section>
+
+  <section class="section sp-band on-dark" aria-labelledby="engage-title">
+    <div class="container">
+      <SectionHeading id="engage-title" title="Engagement options" intro="Choose the arrangement that fits. Options are subject to availability and are agreed with you before work begins." />
+      <OfferingGrid items={options} cols={4} variant="dark" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeading id="process-title" title="How we deliver" intro="A clear path from the first conversation to continuing support." />
+      <ProcessSteps steps={steps} />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="faq-title">
+    <div class="container">
+      <SectionHeading id="faq-title" title="Frequently asked questions" />
+      <Faq items={faqs} />
+    </div>
+  </section>
+
+  <EnquirySection
+    title="Request a Consultation"
+    text="Tell us about your IT environment and what you need help with. We will respond to discuss your requirements and recommend an approach."
+    formId="managed-enquiry"
+    subject="IT Managed Services enquiry"
+    submitLabel="Send enquiry"
+    fields={fields}
+    useServiceWeb3Forms
+    tips={['How many users and devices you have', 'The systems you rely on most', 'Any recurring problems or upcoming changes']}
+  />
+</BaseLayout>

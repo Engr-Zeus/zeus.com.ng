@@ -1,0 +1,54 @@
+---
+// Reusable project card. Used for verified projects and, with illustrative=true, for labeled scenarios.
+import SvcIcon from '../service/SvcIcon.astro';
+import { serviceLink } from '../../data/project-model';
+import type { CardData } from '../../data/project-model';
+
+interface Props {
+  project: CardData & { client?: string; href?: string; detail?: boolean };
+  illustrative?: boolean;
+}
+const { project, illustrative = false } = Astro.props;
+const links = project.services.map((k) => serviceLink(k)).filter(Boolean) as { title: string; href: string }[];
+const hasOutcomes = !illustrative && project.outcomes && project.outcomes.length > 0;
+---
+<article class:list={['pj-card', illustrative && 'pj-card--illustrative']} id={project.slug}>
+  {(project.image || illustrative) && (
+    <div class="pj-visual">
+      {project.image && <img src={project.image} alt={project.imageAlt ?? ''} width="800" height="500" loading="lazy" />}
+      <div class="pj-slot" hidden={!!project.image}><slot /></div>
+      {illustrative && <span class="pj-flag">Illustrative scenario</span>}
+    </div>
+  )}
+  <div class="pj-body">
+    <p class="pj-cat">{project.category}</p>
+    <h3>{project.title}</h3>
+    <p class="pj-who">
+      {illustrative ? project.industry : project.client ? <><span>Client:</span> {project.client}</> : <><span>Client type:</span> {project.industry}</>}
+    </p>
+    <dl class="pj-fields">
+      <div><dt>The need</dt><dd>{project.need}</dd></div>
+      <div><dt>{illustrative ? 'Proposed approach' : 'Proposed solution'}</dt><dd>{project.solution}</dd></div>
+    </dl>
+    {links.length > 0 && (
+      <p class="pj-services">
+        <span class="visually-hidden">Services involved: </span>
+        {links.map((l) => <a href={l.href}>{l.title}</a>)}
+      </p>
+    )}
+    <details class="pj-more">
+      <summary>Implementation approach</summary>
+      <ol>{project.approach.map((a) => <li>{a}</li>)}</ol>
+    </details>
+    {hasOutcomes && (
+      <div class="pj-outcomes">
+        <h4>Documented outcomes</h4>
+        <ul>{project.outcomes!.map((o) => <li><SvcIcon name="check" size={16} />{o}</li>)}</ul>
+      </div>
+    )}
+    {illustrative && <p class="pj-note">No outcomes are shown. This is a hypothetical example, not a completed project.</p>}
+    {!illustrative && project.detail && project.href && (
+      <a class="btn btn--outline btn--sm pj-link" href={project.href}>Read the case study<span class="visually-hidden">: {project.title}</span></a>
+    )}
+  </div>
+</article>

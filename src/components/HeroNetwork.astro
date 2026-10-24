@@ -1,0 +1,48 @@
+---
+// Hero visual: Zeus at the centre, connected to the six service disciplines.
+import Icon from './Icon.astro';
+
+const cx = 280;
+const cy = 250;
+const rx = 190;
+const ry = 170;
+const items = [
+  { label: 'Managed IT', icon: 'shield' },
+  { label: 'Web', icon: 'browser' },
+  { label: 'Software', icon: 'code' },
+  { label: 'Infrastructure', icon: 'server' },
+  { label: 'Hardware', icon: 'laptop' },
+  { label: 'Home and security', icon: 'camera' },
+];
+const nodes = items.map((item, i) => {
+  const angle = ((-90 + i * 60) * Math.PI) / 180;
+  return { ...item, i, x: Math.round(cx + rx * Math.cos(angle)), y: Math.round(cy + ry * Math.sin(angle)) };
+});
+---
+<svg
+  viewBox="0 0 560 520"
+  role="group"
+  aria-label="Diagram: Zeus System Technologies at the centre, connected to managed IT, web, software, infrastructure, hardware, and home security."
+>
+  <ellipse class="net-ring" cx={cx} cy={cy} rx={rx} ry={ry} />
+  {nodes.map((n) => (
+    <path class="net-line" d={`M${cx} ${cy}L${n.x} ${n.y}`} pathLength="1" style={`--i:${n.i}`} />
+  ))}
+  {nodes.map((n) => (
+    <g
+      class="net-node"
+      style={`--i:${n.i}`}
+      tabindex="0"
+      role="group"
+      aria-label={`${n.label} services`}
+    >
+      <circle cx={n.x} cy={n.y} r="34" />
+      <Icon name={n.icon} size={28} x={n.x - 14} y={n.y - 14} />
+      <text x={n.x} y={n.y + 58} text-anchor="middle">{n.label}</text>
+    </g>
+  ))}
+  <g class="net-core">
+    <circle cx={cx} cy={cy} r="48" />
+    <path transform={`translate(${cx - 24} ${cy - 24}) scale(2)`} d="M13 2L5 13.5h6L10 22l9-12h-6.2L13 2z" />
+  </g>
+</svg>

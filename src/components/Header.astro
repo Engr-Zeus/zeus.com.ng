@@ -1,0 +1,135 @@
+---
+import { mainNav, services, quoteHref } from '../data/site';
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header" data-header>
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Zeus System Technologies, home">
+      <img src="/images/logo-zts.webp" alt="" width="640" height="489" />
+    </a>
+
+    <nav class="primary-nav" aria-label="Main">
+      <ul class="nav-list">
+        {mainNav.map((item) =>
+          item.label === 'Services' ? (
+            <li class="dropdown" data-dropdown>
+              <button
+                type="button"
+                class="dropdown-toggle"
+                aria-expanded="false"
+                aria-controls="services-menu"
+                data-current={isCurrent(item.href) ? 'true' : 'false'}
+              >
+                Services
+                <Icon name="chevron-down" size={16} class="chev" />
+              </button>
+              <div class="dropdown-panel" id="services-menu" hidden>
+                <a class="all-link" href="/services/" aria-current={path === '/services/' ? 'page' : undefined}>All services</a>
+                {services.map((s) => (
+                  <a href={s.href} aria-current={isCurrent(s.href) ? 'page' : undefined}>
+                    <Icon name={s.icon} size={20} />
+                    {s.short}
+                  </a>
+                ))}
+              </div>
+            </li>
+          ) : (
+            <li>
+              <a class="nav-link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+            </li>
+          )
+        )}
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <Button href={quoteHref} size="sm" class="header-cta">Request a Quote</Button>
+      <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+        <span class="visually-hidden" data-menu-label>Open menu</span>
+        <Icon name="menu" class="icon-open" />
+        <Icon name="close" class="icon-close" />
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-panel" id="mobile-menu" data-mobile-panel hidden>
+    <nav aria-label="Mobile">
+      {mainNav.map((item) => (
+        <>
+          <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+          {item.label === 'Services' && (
+            <div class="sub">
+              {services.map((s) => (
+                <a href={s.href} aria-current={isCurrent(s.href) ? 'page' : undefined}>{s.short}</a>
+              ))}
+            </div>
+          )}
+        </>
+      ))}
+    </nav>
+    <a class="btn btn--primary" href={quoteHref}>Request a Quote</a>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-mobile-panel]');
+  const label = document.querySelector<HTMLElement>('[data-menu-label]');
+  const dd = document.querySelector<HTMLElement>('[data-dropdown]');
+  const ddBtn = dd?.querySelector<HTMLButtonElement>('.dropdown-toggle');
+  const ddPanel = dd?.querySelector<HTMLElement>('.dropdown-panel');
+
+  function setDropdown(open: boolean) {
+    if (!ddBtn || !ddPanel) return;
+    ddBtn.setAttribute('aria-expanded', String(open));
+    ddPanel.hidden = !open;
+  }
+
+  function setMenu(open: boolean) {
+    if (!toggle || !panel) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+    document.body.classList.toggle('menu-open', open);
+    if (label) label.textContent = open ? 'Close menu' : 'Open menu';
+  }
+
+  ddBtn?.addEventListener('click', () => setDropdown(ddBtn.getAttribute('aria-expanded') !== 'true'));
+
+  document.addEventListener('click', (e) => {
+    if (dd && !dd.contains(e.target as Node)) setDropdown(false);
+  });
+
+  dd?.addEventListener('focusout', (e) => {
+    const next = (e as FocusEvent).relatedTarget as Node | null;
+    if (next && !dd.contains(next)) setDropdown(false);
+  });
+
+  toggle?.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));
+
+  // Close the mobile menu after the person follows a link inside it.
+  panel?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setMenu(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (ddBtn?.getAttribute('aria-expanded') === 'true') {
+      setDropdown(false);
+      ddBtn.focus();
+    }
+    if (toggle?.getAttribute('aria-expanded') === 'true') {
+      setMenu(false);
+      toggle.focus();
+    }
+  });
+
+  // Reset the mobile menu when the layout switches to the desktop navigation.
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+    if (e.matches) setMenu(false);
+  });
+</script>

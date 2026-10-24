@@ -1,0 +1,96 @@
+---
+// Optional case study page. One page is generated for each project in src/data/projects.ts that has `detail: true`.
+// With no verified projects this route generates nothing.
+import '../../styles/service-page.css';
+import '../../styles/projects.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Button from '../../components/Button.astro';
+import ProcessSteps from '../../components/service/ProcessSteps.astro';
+import SvcIcon from '../../components/service/SvcIcon.astro';
+import { projects } from '../../data/projects';
+import { serviceLink } from '../../data/project-model';
+
+export function getStaticPaths() {
+  return projects.filter((p) => p.detail).map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project } = Astro.props;
+const links = project.services.map((k) => serviceLink(k)).filter(Boolean) as { title: string; href: string }[];
+const hasOutcomes = !!project.outcomes && project.outcomes.length > 0;
+---
+<BaseLayout
+  title={`${project.title} | Case Study | Zeus System Technologies`}
+  description={project.summary}
+  image={project.image}
+  imageAlt={project.imageAlt}
+>
+  <section class="sp-hero on-dark" aria-labelledby="sp-title">
+    <div class="container sp-hero-grid" style={project.image ? '' : 'grid-template-columns:1fr'}>
+      <div>
+        <nav class="sp-crumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/projects/">Projects</a></li>
+            <li><span aria-current="page">{project.title}</span></li>
+          </ol>
+        </nav>
+        <h1 id="sp-title">{project.title}</h1>
+        <p class="sp-lead">{project.summary}</p>
+        <div class="hero-actions">
+          <Button href="/contact/">Discuss a Similar Requirement</Button>
+          <Button href="/projects/" variant="outline">All Projects</Button>
+        </div>
+      </div>
+      {project.image && (
+        <figure class="pj-shot sp-hero-visual">
+          <img src={project.image} alt={project.imageAlt ?? ''} width="1200" height="750" />
+          <figcaption>Approved image from the project.</figcaption>
+        </figure>
+      )}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="overview-title">
+    <div class="container sp-split">
+      <div class="sp-prose">
+        <h2 id="overview-title">The need</h2>
+        <p>{project.need}</p>
+        <h2 class="sp-sub">The solution</h2>
+        <p>{project.solution}</p>
+      </div>
+      <dl class="pj-facts">
+        <div><dt>{project.client ? 'Client' : 'Client type'}</dt><dd>{project.client ?? project.industry}</dd></div>
+        {project.client && <div><dt>Industry</dt><dd>{project.industry}</dd></div>}
+        <div><dt>Category</dt><dd>{project.category}</dd></div>
+        {links.length > 0 && (
+          <div><dt>Services involved</dt><dd>{links.map((l, i) => <><a href={l.href}>{l.title}</a>{i < links.length - 1 && <br />}</>)}</dd></div>
+        )}
+      </dl>
+    </div>
+  </section>
+
+  {project.approach.length > 0 && (
+    <section class="section section--mist" aria-labelledby="approach-title">
+      <div class="container">
+        <SectionHeading id="approach-title" title="Implementation approach" intro="How the work was carried out." />
+        <ProcessSteps steps={project.approach.map((a, i) => ({ title: `Step ${i + 1}`, text: a }))} />
+      </div>
+    </section>
+  )}
+
+  {hasOutcomes && (
+    <section class="section" aria-labelledby="outcomes-title">
+      <div class="container">
+        <div class="pj-outcomes pj-outcomes--lg">
+          <h2 id="outcomes-title">Documented outcomes</h2>
+          <p>Shown only because the company has documented and verified them.</p>
+          <ul>{project.outcomes!.map((o) => <li><SvcIcon name="check" size={18} />{o}</li>)}</ul>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CtaBand title="Have a Similar Requirement?" text="Tell us what you are trying to solve and we will recommend a practical way forward." />
+</BaseLayout>

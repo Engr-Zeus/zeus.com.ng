@@ -1,0 +1,47 @@
+---
+import Button from '../Button.astro';
+import { company } from '../../data/site';
+
+interface Crumb { label: string; href?: string }
+interface Props {
+  title: string;
+  lead: string;
+  primary: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  crumbs: Crumb[];
+  schemaName?: string; // schema.org Service name. Omit on pages that are not a service (Projects, Contact).
+  schemaDescription?: string;
+}
+const { title, lead, primary, secondary, crumbs, schemaName, schemaDescription } = Astro.props;
+const serviceLd = schemaName && {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: schemaName,
+  description: schemaDescription,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  provider: { '@type': 'Organization', name: company.brandName, url: company.url },
+};
+---
+<section class="sp-hero on-dark" aria-labelledby="sp-title">
+  <div class="container sp-hero-grid">
+    <div>
+      <nav class="sp-crumb" aria-label="Breadcrumb">
+        <ol>
+          {crumbs.map((c, i) => (
+            <li>
+              {c.href && i < crumbs.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <h1 id="sp-title">{title}</h1>
+      <p class="sp-lead">{lead}</p>
+      <div class="hero-actions">
+        <Button href={primary.href}>{primary.label}</Button>
+        {secondary && <Button href={secondary.href} variant="outline">{secondary.label}</Button>}
+      </div>
+    </div>
+    <div class="sp-hero-visual"><slot /></div>
+  </div>
+  {serviceLd && <script type="application/ld+json" set:html={JSON.stringify(serviceLd)} />}
+</section>

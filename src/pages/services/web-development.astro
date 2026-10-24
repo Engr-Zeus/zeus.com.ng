@@ -1,0 +1,160 @@
+---
+import '../../styles/service-page.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceHero from '../../components/service/ServiceHero.astro';
+import OfferingGrid from '../../components/service/OfferingGrid.astro';
+import ProcessSteps from '../../components/service/ProcessSteps.astro';
+import Faq from '../../components/service/Faq.astro';
+import EnquirySection from '../../components/service/EnquirySection.astro';
+import WebMock from '../../components/service/visuals/WebMock.astro';
+import type { Field } from '../../components/service/types';
+
+// Mockups are illustrative wireframes, not client projects. No prices, timelines, platform partnerships, or guarantees are stated.
+const benefits = [
+  { icon: 'globe', title: 'Establish an online presence', text: 'Give customers a place to find you, learn what you offer, and judge your credibility.' },
+  { icon: 'mail', title: 'Communicate with customers', text: 'Share information, answer common questions, and make it easy to get in touch.' },
+  { icon: 'workflow', title: 'Support business operations', text: 'Move routine tasks online with forms, portals, and web-based tools your team can use.' },
+];
+const mocks = [
+  { variant: 'corporate', title: 'Corporate and business websites', text: 'Clear, professional websites that present your organization, services, and contact details, built for businesses and institutions of different sizes.' },
+  { variant: 'shop', title: 'E-commerce websites, where offered', text: 'Online storefronts for organizations that want to sell products on the web. Availability and scope are confirmed when we discuss your project.' },
+  { variant: 'portal', title: 'Custom web applications and portals', text: 'Web-based tools and portals with controlled access that support the way your staff or customers work with you.' },
+];
+const more = [
+  { icon: 'palette', title: 'Website design and development', text: 'Layouts and pages designed around your brand and content, then built for the web.' },
+  { icon: 'refresh', title: 'Website redesign and modernization', text: 'Refreshing an existing site so it looks current, is easier to use, and works on today’s devices.' },
+  { icon: 'upload', title: 'Hosting, deployment, and maintenance', text: 'Getting your site online, keeping it running, and looking after updates once it is live.' },
+  { icon: 'search', title: 'Search-friendly structure and performance', text: 'Clean page structure and attention to loading speed, so your site is easier to find and quicker to use.' },
+];
+const steps = [
+  { title: 'Discovery', text: 'We learn about your goals, audience, content, and requirements.' },
+  { title: 'Design', text: 'We plan page structure and visual design for your review.' },
+  { title: 'Development', text: 'We build the site or application to the agreed design.' },
+  { title: 'Testing', text: 'We check pages, forms, and behavior across devices and browsers.' },
+  { title: 'Deployment', text: 'We put the site live and confirm everything works as intended.' },
+  { title: 'Maintenance', text: 'We provide ongoing updates and support after launch.' },
+];
+const projectTypes = [
+  { icon: 'briefcase', title: 'Business websites', text: 'For small businesses and professionals who need a clear online presence.' },
+  { icon: 'building', title: 'Corporate and institutional websites', text: 'For companies, schools, and public bodies presenting services and information.' },
+  { icon: 'bag', title: 'E-commerce websites', text: 'For organizations that want to sell products online, where offered.' },
+  { icon: 'browser', title: 'Web applications and portals', text: 'For organizations that need staff or customer access to online tools.' },
+  { icon: 'refresh', title: 'Redesigns', text: 'For owners of existing websites that feel dated or hard to use.' },
+];
+const faqs = [
+  { q: 'How long does a website project take?', a: 'It depends on the size of the site, the features required, and how quickly content and feedback are available. We do not publish fixed timelines; we agree a schedule with you after reviewing your requirements.' },
+  { q: 'Will you maintain my website after launch?', a: 'Yes, ongoing maintenance is part of what we offer. We will discuss what you need, such as updates and support, when we scope your project.' },
+  { q: 'Can you host my website?', a: 'Website hosting and deployment are part of our service. Tell us about your needs and we will recommend a suitable approach.' },
+  { q: 'Who provides the content, such as text and images?', a: 'Usually you provide the core content because you know your business best, and we advise on structure and presentation. If you need help with content, tell us during discovery.' },
+  { q: 'What do you need from me to start?', a: 'A description of your organization, what the website should achieve, the pages or features you expect, examples you like, and any deadline. The more detail you share, the more accurate our quote.' },
+  { q: 'How much does a website cost?', a: 'Costs depend on scope, so we do not publish package prices. Describe your project and we will prepare a quote.' },
+];
+const fields: Field[] = [
+  { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+  { name: 'email', label: 'Email address', type: 'email', required: true, autocomplete: 'email' },
+  { name: 'phone', label: 'Phone number', type: 'tel', autocomplete: 'tel' },
+  { name: 'organization', label: 'Business or organization', autocomplete: 'organization' },
+  { name: 'project', label: 'Project type', type: 'select', wide: true, options: ['Business website', 'Corporate or institutional website', 'E-commerce website', 'Web application or portal', 'Website redesign', 'Hosting or maintenance', 'Not sure yet'] },
+  { name: 'message', label: 'Describe your project', type: 'textarea', required: true, hint: 'Pages or features you need, content you have, examples you like, and any deadline.' },
+];
+---
+<BaseLayout
+  title="Web Development | Zeus System Technologies"
+  description="Website design, web applications, redesign, hosting, and maintenance from Zeus System Technologies. Describe your project and request a quote."
+>
+  <ServiceHero
+    title="Web Experiences That Move Your Business Forward."
+    lead="Professional websites and web applications help businesses establish an online presence, communicate with customers, and support day-to-day operations. We design, build, and look after them."
+    primary={{ label: 'Start a Website Project', href: '#enquire' }}
+    secondary={{ label: 'View Our Services', href: '/services/' }}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: 'Web Development' }]}
+    schemaName="Web Development"
+    schemaDescription="Website design and development, web applications, redesign, hosting, and maintenance."
+  >
+    <figure class="sp-figure">
+      <div class="sp-hero-devices">
+        <WebMock device="browser" variant="corporate" />
+        <WebMock device="tablet" variant="business" />
+        <WebMock device="phone" variant="business" />
+      </div>
+      <figcaption>Illustrative design concepts. These are not client projects.</figcaption>
+    </figure>
+  </ServiceHero>
+
+  <section class="section" aria-labelledby="why-title">
+    <div class="container">
+      <SectionHeading id="why-title" title="Why a professional web presence matters" intro="A well-built website or web application does more than look good. It works for your business." />
+      <OfferingGrid items={benefits} cols={3} variant="cards" />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="build-title">
+    <div class="container">
+      <SectionHeading id="build-title" title="What we build" intro="From straightforward business sites to custom web applications." />
+      <div class="sp-mocks">
+        {mocks.map((m) => (
+          <div class="sp-mock-row">
+            <div>
+              <h3>{m.title}</h3>
+              <p>{m.text}</p>
+              <span class="sp-tag">Illustrative concept</span>
+            </div>
+            <WebMock variant={m.variant as 'corporate' | 'shop' | 'portal'} />
+          </div>
+        ))}
+        <div class="sp-mock-row">
+          <div>
+            <h3>Responsive and mobile-friendly design</h3>
+            <p>Websites that adapt to phones, tablets, and desktops, so visitors have a good experience on whichever device they use.</p>
+            <span class="sp-tag">Illustrative concept</span>
+          </div>
+          <div class="sp-hero-devices" style="padding-bottom:3rem">
+            <WebMock device="browser" variant="business" />
+            <WebMock device="tablet" variant="corporate" />
+            <WebMock device="phone" variant="corporate" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="more-title">
+    <div class="container">
+      <SectionHeading id="more-title" title="Behind every website" intro="The design, hosting, and care that keep a site working well." />
+      <OfferingGrid items={more} cols={2} variant="rows" />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeading id="process-title" title="Our development process" intro="Six stages, with your input at each one." />
+      <ProcessSteps steps={steps} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="types-title">
+    <div class="container">
+      <SectionHeading id="types-title" title="Common project types" intro="Typical projects and the clients they suit." />
+      <OfferingGrid items={projectTypes} cols={3} variant="rows" />
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="faq-title">
+    <div class="container">
+      <SectionHeading id="faq-title" title="Frequently asked questions" />
+      <Faq items={faqs} />
+    </div>
+  </section>
+
+  <EnquirySection
+    title="Start a Website Project"
+    text="Describe what you need and we will prepare a quote. Share as much detail as you can; rough ideas are fine."
+    formId="web-enquiry"
+    subject="Web Development project enquiry"
+    submitLabel="Send project enquiry"
+    fields={fields}
+    useServiceWeb3Forms
+    tips={['What the website should achieve', 'Pages or features you expect', 'Examples of sites you like', 'Any deadline you are working to']}
+  />
+</BaseLayout>

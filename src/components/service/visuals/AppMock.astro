@@ -1,0 +1,37 @@
+---
+// Illustrative application interfaces (not working systems, no real data).
+interface Props { variant?: 'dashboard' | 'records' }
+const { variant = 'dashboard' } = Astro.props;
+---
+<div class="sp-device" aria-hidden="true">
+  <div class="sp-device-bar"><i></i><i></i><i></i><span class="sp-url"></span></div>
+  <div class="wf">
+    {variant === 'dashboard' && (
+      <div class="side">
+        <div class="rail"><b class="c"></b><b></b><b></b><b></b><b></b></div>
+        <div style="display:grid;gap:.55rem">
+          <div class="row3">
+            <div class="blk" style="padding:.45rem;display:grid;gap:.3rem"><b class="s" style="width:60%"></b><b class="l" style="width:45%"></b></div>
+            <div class="blk cy" style="padding:.45rem;display:grid;gap:.3rem"><b class="s" style="width:60%"></b><b class="l" style="width:45%"></b></div>
+            <div class="blk" style="padding:.45rem;display:grid;gap:.3rem"><b class="s" style="width:60%"></b><b class="l" style="width:45%"></b></div>
+          </div>
+          <div class="row2">
+            <div class="bars" style="height:4.4rem"><i style="height:35%"></i><i style="height:55%" class="c"></i><i style="height:45%"></i><i style="height:70%" class="c"></i><i style="height:60%"></i><i style="height:85%" class="c"></i><i style="height:65%"></i></div>
+            <div class="tbl"><div class="r"><b></b><b></b><b class="pill"></b></div><div class="r"><b></b><b></b><b class="pill"></b></div><div class="r"><b></b><b></b><b class="pill"></b></div><div class="r"><b></b><b></b><b class="pill"></b></div></div>
+          </div>
+        </div>
+      </div>
+    )}
+    {variant === 'records' && (
+      <>
+        <div class="nav"><b style="width:35%;height:.8rem;border-radius:99px;margin-right:auto"></b><b class="btn-b" style="width:3.2rem"></b></div>
+        <div class="row2">
+          <div class="tbl">
+            {[0, 1, 2, 3, 4, 5].map(() => <div class="r"><b></b><b></b><b class="pill"></b></div>)}
+          </div>
+          <div class="blk" style="padding:.6rem;display:grid;gap:.5rem;align-content:start"><b class="s" style="width:50%"></b><div class="blk" style="min-height:1.2rem;background:#fff"></div><b class="s" style="width:40%"></b><div class="blk" style="min-height:1.2rem;background:#fff"></div><b class="btn-b" style="width:50%"></b></div>
+        </div>
+      </>
+    )}
+  </div>
+</div>

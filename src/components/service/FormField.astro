@@ -1,0 +1,64 @@
+---
+// One field of the shared enquiry form (text, email, tel, select, textarea, single checkbox, or checkbox group).
+import type { Field } from './types';
+interface Props { f: Field; formId: string }
+const { f, formId } = Astro.props;
+const fid = `${formId}-${f.name}`;
+const type = f.type ?? 'text';
+const describedBy = [f.hint ? `${fid}-hint` : '', `${fid}-err`].filter(Boolean).join(' ');
+---
+{type === 'checkboxes' && (
+  <fieldset class="sp-checkgroup sp-field--wide" data-checkgroup={f.name} data-label={f.label} data-required={f.required ? 'true' : undefined} data-required-message={f.requiredMessage} aria-describedby={describedBy}>
+    <legend>
+      {f.label}
+      {f.required && <span class="sp-req" aria-hidden="true"> *</span>}
+      {f.required && <span class="visually-hidden"> (required)</span>}
+    </legend>
+    {f.hint && <p class="sp-hint" id={`${fid}-hint`}>{f.hint}</p>}
+    <div class="sp-options">
+      {(f.options ?? []).map((o, i) => (
+        <label class="sp-option" for={`${fid}-${i}`}>
+          <input type="checkbox" id={`${fid}-${i}`} value={o} />
+          <span>{o}</span>
+        </label>
+      ))}
+    </div>
+    <p class="sp-error" id={`${fid}-err`} hidden></p>
+  </fieldset>
+)}
+{type === 'checkbox' && (
+  <div class="sp-field sp-field--wide">
+    <div class="sp-check">
+      <input id={fid} name={f.name} type="checkbox" value="Yes" required={f.required} aria-describedby={describedBy} data-label={f.summaryLabel ?? f.label} data-required-message={f.requiredMessage} />
+      <span>
+        <label for={fid}>{f.label}</label>
+        {f.link && <>{' '}<a href={f.link.href}>{f.link.text}</a></>}.
+        {f.required && <span class="visually-hidden"> (required)</span>}
+      </span>
+    </div>
+    <p class="sp-error" id={`${fid}-err`} hidden></p>
+  </div>
+)}
+{type !== 'checkbox' && type !== 'checkboxes' && (
+  <div class:list={['sp-field', (f.wide || type === 'textarea') && 'sp-field--wide']}>
+    <label for={fid}>
+      {f.label}
+      {f.required && <span class="sp-req" aria-hidden="true"> *</span>}
+      {f.required && <span class="visually-hidden"> (required)</span>}
+    </label>
+    {type === 'select' && (
+      <select id={fid} name={f.name} required={f.required} aria-describedby={describedBy} data-label={f.label}>
+        <option value="">Select an option</option>
+        {(f.options ?? []).map((o) => <option value={o}>{o}</option>)}
+      </select>
+    )}
+    {type === 'textarea' && (
+      <textarea id={fid} name={f.name} rows={f.rows ?? 5} required={f.required} placeholder={f.placeholder} aria-describedby={describedBy} data-label={f.label}></textarea>
+    )}
+    {type !== 'select' && type !== 'textarea' && (
+      <input id={fid} name={f.name} type={type} required={f.required} placeholder={f.placeholder} autocomplete={f.autocomplete} inputmode={f.inputmode} aria-describedby={describedBy} data-label={f.label} />
+    )}
+    {f.hint && <p class="sp-hint" id={`${fid}-hint`}>{f.hint}</p>}
+    <p class="sp-error" id={`${fid}-err`} hidden></p>
+  </div>
+)}
