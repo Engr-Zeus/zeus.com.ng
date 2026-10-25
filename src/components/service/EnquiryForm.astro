@@ -60,6 +60,7 @@ for (const f of fields) {
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const PHONE_RE = /^\+?[\d\s()\-]{7,}$/;
   const MIN_FILL_MS = 1500; // a person cannot complete a form faster than this
+  class ProviderSubmissionError extends Error {}
 
   document.querySelectorAll<HTMLFormElement>('form[data-enquiry]').forEach((form) => {
     const loadedAt = Date.now();
@@ -218,19 +219,26 @@ for (const f of fields) {
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify(payload),
         });
-        let result: { success?: boolean };
+        let result: { success?: boolean; message?: string };
         try {
           result = await res.json();
         } catch (error) {
           throw new Error('Web3Forms returned an invalid response.', { cause: error });
         }
-        if (res.status !== 200 || result.success !== true) throw new Error('Web3Forms rejected the submission.');
+        if (res.status !== 200 || result.success !== true) {
+          const reason = typeof result.message === 'string' && result.message.trim()
+            ? result.message.trim()
+            : `Web3Forms rejected the submission (HTTP ${res.status}).`;
+          throw new ProviderSubmissionError(reason);
+        }
         form.reset();
         show('ok', form.dataset.success ?? 'Thank you. Your enquiry has been sent. We will reply using the contact details you provided.');
-      } catch {
+      } catch (error) {
+        console.error('Enquiry form submission failed.', error);
+        const reason = error instanceof ProviderSubmissionError ? ` Reason: ${error.message}` : '';
         show(
           'error',
-          `We could not send your enquiry. Please try again, or contact us at ${form.dataset.email} or ${form.dataset.phone}.`,
+          `We could not send your enquiry.${reason} Please try again, or contact us at ${form.dataset.email} or ${form.dataset.phone}.`,
           mailtoHref()
         );
       } finally {
